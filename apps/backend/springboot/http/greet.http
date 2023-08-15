@@ -1,0 +1,7 @@
+GET http://localhost:8080/greeting
+
+###
+
+GET http://localhost:8080/greeting?name=Jane
+Content-Type: application/json
+
