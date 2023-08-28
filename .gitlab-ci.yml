@@ -7,6 +7,12 @@ build:
     - wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
     - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
     - apt update && apt install vlt
+    - find / -name build.sh 2>/dev/null
+    - pwd
+    - ls -la
+    - chmod +x ./bin/build.sh
+    - pwd
+    - ls -la
     - echo "Contents of ./bin/build.sh:"
     - cat ./bin/build.sh
     - vlt run --command ./bin/build.sh
