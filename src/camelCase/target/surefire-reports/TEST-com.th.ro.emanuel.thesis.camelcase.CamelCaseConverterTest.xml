@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.143" tests="4" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.15" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="20"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="GB"/>
     <property name="sun.boot.library.path" value="/usr/local/Cellar/openjdk/20.0.1/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/surefire/surefirebooter-20230816140444892_3.jar /Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/surefire 2023-08-16T14-04-44_591-jvmRun1 surefire-20230816140444892_1tmp surefire_0-20230816140444892_2tmp"/>
+    <property name="sun.java.command" value="/Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/surefire/surefirebooter-20230818061441521_3.jar /Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/surefire 2023-08-18T06-14-41_075-jvmRun1 surefire-20230818061441521_1tmp surefire_0-20230818061441521_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/test-classes:/Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/classes:/Users/emanuelmak/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar:/Users/emanuelmak/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.7.2/junit-jupiter-api-5.7.2.jar:/Users/emanuelmak/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/emanuelmak/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/emanuelmak/.m2/repository/org/junit/platform/junit-platform-commons/1.7.2/junit-platform-commons-1.7.2.jar:/Users/emanuelmak/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.7.2/junit-jupiter-engine-5.7.2.jar:/Users/emanuelmak/.m2/repository/org/junit/platform/junit-platform-engine/1.7.2/junit-platform-engine-1.7.2.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/surefire/surefirebooter-20230816140444892_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/emanuelmak/Desktop/cloudcompare/src/camelCase/target/surefire/surefirebooter-20230818061441521_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="20.0.1"/>
@@ -58,8 +58,8 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="64.0"/>
   </properties>
-  <testcase name="testBasicString" classname="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.049"/>
+  <testcase name="testBasicString" classname="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.053"/>
   <testcase name="testStringWithSpecialChars" classname="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.004"/>
-  <testcase name="testStringWithNumbers" classname="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.004"/>
+  <testcase name="testStringWithNumbers" classname="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.005"/>
   <testcase name="testStringWithSpacesAndSpecialChars" classname="com.th.ro.emanuel.thesis.camelcase.CamelCaseConverterTest" time="0.004"/>
 </testsuite>

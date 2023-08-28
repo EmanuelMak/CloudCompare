@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  camelcase-builder:
+    build:
+      context: ./src/camelCase
+      dockerfile: Dockerfile
+    volumes:
+      - camelcase-artifacts:/app/
+
+  springboot-app:
+    build:
+      context: ./apps/backend/springboot
+      dockerfile: Dockerfile
+    depends_on:
+      - camelcase-builder
+    ports:
+      - "8080:8080"
+
+  springboot-dev:
+    build:
+      context: ./apps/backend/springboot
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./apps/backend/springboot:/apps/backend/springboot
+      - ./src/camelCase:/src/camelCase
+      - maven_cache:/root/.m2
+    command: /bin/sh -c "mvn -f /src/camelCase/pom.xml clean install && mvn clean install && mvn spring-boot:run"
+
+volumes:
+  camelcase-artifacts: 
+  maven_cache:

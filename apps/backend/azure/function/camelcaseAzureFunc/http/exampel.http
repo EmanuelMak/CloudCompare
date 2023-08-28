@@ -1,0 +1,10 @@
+### Trigger Azure Function with GET request
+GET http://localhost:7071/api/HttpExample?name=Emanuel
+
+
+### Trigger Azure Function with POST request
+POST http://localhost:7071/api/HttpExample
+Content-Type: text/plain
+
+### Trigger Azure Function with POST request
+POST https://camelcaseazurefunc-20230817224503699.azurewebsites.net/api/httpexample?name=Emanuel

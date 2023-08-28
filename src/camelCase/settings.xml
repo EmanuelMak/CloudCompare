@@ -1,0 +1,18 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+    <server>
+      <id>gitlab-package-registry</id>
+      <username>sINFemmakk</username>
+      <password>xBNjp2QWKkx9p21si1v1</password>
+      <!-- <configuration>
+        <httpHeaders>
+          <property>
+            <name>sINFemmakk</name>
+            <value>xBNjp2QWKkx9p21si1v1</value>
+          </property>
+        </httpHeaders>
+      </configuration> -->
+    </server>
+  </servers>
+</settings>

@@ -38,3 +38,8 @@ apps/backend/azure/function/camelcaseAzureFunc/testTerraform/.terraform/
 /target/
 surefire-reports/
 maven-status/
+
+
+
+secrets.yaml
+*/secrets.yaml

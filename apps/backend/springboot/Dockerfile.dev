@@ -1,0 +1,10 @@
+# Use the official JDK 17 base image
+FROM maven:3.9.3-eclipse-temurin-17
+
+# Set the working directory inside the container
+WORKDIR /apps/backend/springboot
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+
