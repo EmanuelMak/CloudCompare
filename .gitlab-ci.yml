@@ -1,18 +1,25 @@
 image: ubuntu
 
-build:
+stages:
+  - build
+  - test
+
+setVaultEnv:
   stage: build
   script:
     - apt update && apt install -y gpg wget lsb-release
     - wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
     - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
     - apt update && apt install vlt
-    - find / -name build.sh 2>/dev/null
-    - pwd
-    - ls -la
-    - chmod +x ./bin/build.sh
-    - pwd
-    - ls -la
-    - echo "Contents of ./bin/build.sh:"
-    - cat ./bin/build.sh
+    - vlt login
     - vlt run --command ./bin/build.sh
+
+test-variables:
+  stage: test
+  script:
+    - |
+      if [ -z "${GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN}" ]; then 
+        echo -e "\e[31mGIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN is not set\e[0m"; 
+      else 
+        echo "GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN length: ${#GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN}";
+      fi
