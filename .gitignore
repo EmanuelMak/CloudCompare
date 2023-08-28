@@ -1,0 +1,35 @@
+# General
+secrets/
+secrets/*
+secrets
+node_modules/
+*.log
+
+# Environment & Config
+.envrc
+.env
+*/.env
+*/.envrc
+*/.env.*
+*/.envrc.*
+
+# Java / Maven / Spring Boot
+*.class
+*.war
+*.ear
+*.zip
+*.releaseBackup
+/target/
+*/target/
+
+# Azure Functions
+local.settings.json
+/bin/
+/obj/
+/publish/
+.vscode/
+
+# Others
+*.jar
+
+apps/backend/azure/function/camelcaseAzureFunc/testTerraform/.terraform/
