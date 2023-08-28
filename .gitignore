@@ -33,3 +33,8 @@ local.settings.json
 *.jar
 
 apps/backend/azure/function/camelcaseAzureFunc/testTerraform/.terraform/
+.DS_Store
+*.class
+/target/
+surefire-reports/
+maven-status/
