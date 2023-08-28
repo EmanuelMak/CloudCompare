@@ -1,11 +1,12 @@
 image: ubuntu
 
 stages:
+  - init
   - build
   - test
 
 setVaultEnv:
-  stage: build
+  stage: init
   script:
     - apt update && apt install -y gpg wget lsb-release
     - wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -17,9 +18,4 @@ setVaultEnv:
 test-variables:
   stage: test
   script:
-    - |
-      if [ -z "${GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN}" ]; then 
-        echo -e "\e[31mGIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN is not set\e[0m"; 
-      else 
-        echo "GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN length: ${#GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN}";
-      fi
+   - vlt secrets
