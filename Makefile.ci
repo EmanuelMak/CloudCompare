@@ -1,6 +1,36 @@
-testEnvSecrets:
-	@echo 'AWS_ID: $(AWS_ID)'
-	@echo 'TEST_TEST: $(TEST_TEST)'
+# List all the known secrets that correspond to IDs, usernames, and other non-sensitive information
+KNOWN_SECRETS := \
+    AWS_ID \
+    AWS_USER \
+    GIT_GITLAB_CLOUDCOMPARESECRETS_URL \
+    GIT_GITLAB_CLOUDCOMPARE_URL \
+    TEST_TEST \
+    VAULT_APP_NAME \
+    VAULT_ORG_ID \
+    VAULT_PROJECT_ID \
+    VAULT_SERVICEPRINCIPALS_CI_NAME
+
+# List all the known secrets that correspond to sensitive information like passwords and tokens
+SENSITIVE_SECRETS := \
+    AWS_PASSWORD \
+    GIT_GITLAB_CLOUDCOMPARESECRETS_TOKEN \
+    GIT_GITLAB_CLOUDCOMPARE_TOKEN \
+    VAULT_SERVICEPRINCIPALS_CI_CLIENT_ID \
+    VAULT_SERVICEPRINCIPALS_CI_CLIENT_SECRET
+
+printKnownSecrets:
+	@$(foreach var,$(KNOWN_SECRETS),echo '$(var): $($(var))';)
+
+checkSensitiveSecrets:
+	@$(foreach var,$(SENSITIVE_SECRETS), \
+        if [ -z "$($(var))" ]; then \
+            echo "Error: $(var) is not set"; \
+        else \
+            echo "$(var) is set"; \
+        fi; \
+    )
+
+testEnvSecrets: printKnownSecrets checkSensitiveSecrets
 
 test:
 	@echo test
