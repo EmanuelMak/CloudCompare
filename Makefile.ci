@@ -3,4 +3,4 @@ testEnvSecrets:
 	@echo 'TEST_TEST: $(TEST_TEST)'
 
 test:
-    @echo test
+	@echo test
