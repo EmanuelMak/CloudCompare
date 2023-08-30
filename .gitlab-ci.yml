@@ -1,4 +1,4 @@
-image: inf-git.fh-rosenheim.de/sinfemmakk/cloudcompare:latest
+image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare:latest
 
 stages:
   - init
