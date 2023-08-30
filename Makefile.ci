@@ -1,0 +1,6 @@
+testEnvSecrets:
+	@echo 'AWS_ID: $(AWS_ID)'
+	@echo 'TEST_TEST: $(TEST_TEST)'
+
+test:
+    @echo test

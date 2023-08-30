@@ -14,3 +14,5 @@ test-variables:
   stage: test
   script:
    - vlt secrets
+   - make -f Makefile.ci test
+   - vlt run --command="make -f Makefile.ci testEnvSecrets"
