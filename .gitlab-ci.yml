@@ -9,6 +9,7 @@ setVaultEnv:
   stage: init
   script:
     - vlt login
+    - vlt config
 
 test-variables:
   stage: test
