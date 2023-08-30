@@ -11,6 +11,12 @@ setVaultEnv:
     - vlt login
     - vlt config
 
+testAWSCLI:
+  stage: test
+  script:
+    - aws --version
+    - aws s3 ls
+
 test-variables:
   stage: test
   script:
