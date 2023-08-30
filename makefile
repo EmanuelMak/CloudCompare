@@ -169,3 +169,5 @@ cleanLocal:
 testEnvSecrets:
 	@echo 'AWS_ID: $(AWS_ID)'
 	@echo 'TEST_TEST: $(TEST_TEST)'
+testAwsConnected:
+	@vlt run --command="aws s3 ls"

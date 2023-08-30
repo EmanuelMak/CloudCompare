@@ -15,7 +15,7 @@ testAWSCLI:
   stage: test
   script:
     - aws --version
-    - aws s3 ls
+    - vlt run --command="make -f Makefile.ci checkAwsLggedIn"
 
 test-variables:
   stage: test
