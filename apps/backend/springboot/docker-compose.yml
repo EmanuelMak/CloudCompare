@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  api:
+    container_name: api
+    image: camelcase-converter-springboot-app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        GIT_GITLAB_TOKEN: ${GIT_GITLAB_TOKEN}
+        GIT_GITLAB_BASE_URL: ${GIT_GITLAB_BASE_URL}
+        GIT_GITLAB_CLOUDCOMPARE_ID: ${GIT_GITLAB_CLOUDCOMPARE_ID}
+    ports:
+      - 8080:8080
+    restart: always
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - api

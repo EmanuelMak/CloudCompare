@@ -34,5 +34,6 @@ testEnvSecrets: printKnownSecrets checkSensitiveSecrets
 checkAwsLggedIn:
 	@aws s3 ls
 
+
 test:
 	@echo test

@@ -53,8 +53,17 @@ updateDockerImages:
     - vlt --version # Just to confirm VLT runs
     - cd ./pipeline
     - vlt run --command="make -f makefile.ci updateDockerImages"
-
   rules:
     - if: '$CI_COMMIT_BRANCH'
       changes:
         - pipeline/**/*
+
+buildAndPushToEcrSpringboot:
+  stage: build
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest # use the image we just built
+  services:
+    - docker:dind
+  script:
+    - cd apps/backend/springboot
+    - vlt run --command="make -f makefile.ci createAwsEcrRepo"
+    - vlt run --command="make -f makefile.ci pushImageToAwsEcrRepo"

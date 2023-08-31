@@ -1,0 +1,54 @@
+REGION=eu-central-1
+REPO_NAME=myrepo
+
+startSpringbootDocker:
+	@echo GIT_GITLAB_TOKEN $$GIT_GITLAB_TOKEN
+	@echo GIT_GITLAB_BASE_URL $$GIT_GITLAB_BASE_URL
+	@echo GIT_GITLAB_CLOUDCOMPARE_ID $$GIT_GITLAB_CLOUDCOMPARE_ID
+	@docker build --build-arg GIT_GITLAB_TOKEN=$$GIT_GITLAB_TOKEN \
+             --build-arg GIT_GITLAB_BASE_URL=$$GIT_GITLAB_BASE_URL \
+             --build-arg GIT_GITLAB_CLOUDCOMPARE_ID=$$GIT_GITLAB_CLOUDCOMPARE_ID \
+             -t camelcase-converter-springboot-app .
+	@docker run -p 8080:8080 my-spring-boot-app
+
+startComposeDocker:
+	@echo GIT_GITLAB_TOKEN $$GIT_GITLAB_TOKEN
+	@echo GIT_GITLAB_BASE_URL $$GIT_GITLAB_BASE_URL
+	@echo GIT_GITLAB_CLOUDCOMPARE_ID $$GIT_GITLAB_CLOUDCOMPARE_ID
+	@docker-compose up --build
+	@docker ps
+
+
+getRepos:
+	@aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME)
+
+createAwsEcrRepo:
+	@echo "REGION: $(REGION)"
+	@echo "REPO_NAME: $(REPO_NAME)"
+	@echo "Checking if repository $(REPO_NAME) exists in region $(REGION)..."
+	@RESULT=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) 2>&1); \
+	if echo $$RESULT | grep -q 'RepositoryNotFoundException'; then \
+		CREATE_RESULT=$$(aws ecr create-repository --repository-name $(REPO_NAME) --region $(REGION) 2>&1); \
+		echo did not exist created one: \n $$CREATE_RESULT; \
+	else \
+		echo "Repository $(REPO_NAME) already exists in region $(REGION)."; \
+	fi
+loginToAwsEcrRepo:
+	@REPO_URI=$$(aws ecr describe-repositories --region eu-central-1 --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
+	aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $$REPO_URI
+pushImageToAwsEcrRepo:
+	@docker-compose build
+	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
+	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $$REPO_URI &&\
+	docker tag camelcase-converter-springboot-app $$REPO_URI:latest
+	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
+	@docker push $$REPO_URI:latest
+	@echo "Image pushed successfully."
+
+deleteAwsEcrRepo:
+	@echo "Deleting repository $(REPO_NAME) from region $(REGION)..."
+	@aws ecr delete-repository --repository-name $(REPO_NAME) --region $(REGION) --force
+	@echo "Repository $(REPO_NAME) deleted successfully."
+
+
+

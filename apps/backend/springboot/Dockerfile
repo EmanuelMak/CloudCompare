@@ -1,31 +1,47 @@
-# apps/backend/springboot/Dockerfile
+# --- Stage 1: Build the application ---
+FROM --platform=linux/amd64 maven:3.8.2-openjdk-17-slim AS build
 
-# Use the official JDK 17 base image
-FROM openjdk:17-jdk-slim AS builder
+# auth for registry
+ARG GIT_GITLAB_TOKEN
+ARG GIT_GITLAB_BASE_URL
+ARG GIT_GITLAB_CLOUDCOMPARE_ID
 
-# Set the working directory inside the container
+# Convert build arguments to environment variables
+ENV GIT_GITLAB_TOKEN=$GIT_GITLAB_TOKEN
+ENV GIT_GITLAB_BASE_URL=$GIT_GITLAB_BASE_URL
+ENV GIT_GITLAB_CLOUDCOMPARE_ID=$GIT_GITLAB_CLOUDCOMPARE_ID
+
+
+# Set the working directory in the Docker image
 WORKDIR /app
 
-# Copy local code to the container
-COPY . .
+# Copy the Maven pom.xml and settings.xml files
+COPY pom.xml .
+# Copying to the default maven configuration directory
+COPY settings.xml /root/.m2/ 
+RUN chmod 777 /root/.m2/settings.xml
 
-# Package the application
-RUN ./mvnw clean package
+RUN echo GIT_GITLAB_TOKEN $GIT_GITLAB_TOKEN
+RUN echo GIT_GITLAB_BASE_URL $GIT_GITLAB_BASE_URL
+RUN echo GIT_GITLAB_CLOUDCOMPARE_ID $GIT_GITLAB_CLOUDCOMPARE_ID
 
-# Start with a base image containing Java runtime
-FROM openjdk:17-jdk-slim
+# Download project dependencies
+# This layer will only be re-built if the pom.xml changes
+RUN mvn dependency:go-offline -s /root/.m2/settings.xml
 
-# Add a volume pointing to /tmp
-VOLUME /tmp
+# Copy the project source files
+COPY src src/
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Build the application
+RUN mvn clean package
 
-# Set the application's jar file
-ARG JAR_FILE=target/*.jar
+# --- Stage 2: Run the application ---
+FROM openjdk:17-slim
 
-# Copy the application JAR (built in the builder stage) to the container
-COPY --from=builder /app/$JAR_FILE app.jar
+# Set the working directory
+WORKDIR /app
+# Copy the built JAR from the build stage
+COPY --from=build /app/target/cloudCompare-0.0.1-SNAPSHOT.jar /app/app.jar
 
-# Run the jar file 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+# Set the command to run your application
+CMD ["java", "-jar", "/app/app.jar"]
