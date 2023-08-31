@@ -12,13 +12,19 @@ setVaultEnv:
     - vlt config
 
 testAWSCLI:
-  stage: test
+  stage: init
   script:
     - aws --version
     - vlt run --command="make -f Makefile.ci checkAwsLggedIn"
 
+deployCamelCaseConverterMavenToRegistry:
+  stage: Build
+  script:
+    - cd ./src/camelCase
+    - vlt run --command="make -f makefile.ci deployToGitlabPackageRegistry"
+
 test-variables:
-  stage: test
+  stage: init
   script:
    - vlt secrets
    - make -f Makefile.ci test

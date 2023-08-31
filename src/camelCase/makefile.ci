@@ -1,0 +1,2 @@
+deployToGitlabPackageRegistry:
+	mvn clean deploy -s settings.xml

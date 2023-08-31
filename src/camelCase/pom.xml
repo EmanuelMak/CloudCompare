@@ -53,19 +53,20 @@
   </dependencies>
   <repositories>
   <repository>
-    <id>gitlab-package-registry</id>
-    <url>https://inf-git.fh-rosenheim.de/sINFemmakk/cloudcompare.git</url>
+    <id>gitlab-maven</id>
+    <url>https://${GIT_GITLAB_BASE_URL}/api/v4/projects/${GIT_GITLAB_CLOUDCOMPARE_ID}/packages/maven</url>
   </repository>
 </repositories>
 <distributionManagement>
   <repository>
-    <id>gitlab-package-registry</id>
-    <url>https://inf-git.fh-rosenheim.de/api/v4/projects/11831/packages/maven</url>
+    <id>gitlab-maven</id>
+    <url>https://${GIT_GITLAB_BASE_URL}/api/v4/projects/${GIT_GITLAB_CLOUDCOMPARE_ID}/packages/maven</url>
   </repository>
   <snapshotRepository>
-    <id>gitlab-package-registry</id>
-    <url>https://inf-git.fh-rosenheim.de/api/v4/projects/11831/packages/maven</url>
+    <id>gitlab-maven</id>
+    <url>https://${GIT_GITLAB_BASE_URL}/api/v4/projects/${GIT_GITLAB_CLOUDCOMPARE_ID}/packages/maven</url>
   </snapshotRepository>
 </distributionManagement>
+
 </project>
 

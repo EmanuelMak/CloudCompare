@@ -39,3 +39,10 @@ help:
 	@echo "  install  - Install project artifacts to local repository"
 	@echo "  run      - Run the application (for Spring Boot projects)"
 	@echo "  help     - Display help message"
+
+
+load-env:
+	@direnv allow
+
+deployToGitlabPackageRegistry: load-env
+	vlt run --command="make -f makefile.ci deployToGitlabPackageRegistry"
