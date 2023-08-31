@@ -67,3 +67,5 @@ buildAndPushToEcrSpringboot:
     - cd apps/backend/springboot
     - vlt run --command="make -f makefile.ci createAwsEcrRepo"
     - vlt run --command="make -f makefile.ci pushImageToAwsEcrRepo"
+  dependencies:
+    - deployCamelCaseConverterMavenToRegistry
