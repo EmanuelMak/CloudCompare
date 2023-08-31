@@ -42,8 +42,9 @@ pushImageToAwsEcrRepo:
 	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $$REPO_URI &&\
 	docker tag camelcase-converter-springboot-app $$REPO_URI:latest
 	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
-	@echo "Pushing to: $$REPO_URI"
-	@docker push $$REPO_URI:latest
+	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
+	echo "Pushing to: $$REPO_URI"
+	docker push $$REPO_URI:latest
 	@echo "Image pushed successfully."
 
 deleteAwsEcrRepo:
