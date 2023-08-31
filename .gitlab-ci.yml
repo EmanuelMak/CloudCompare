@@ -18,6 +18,7 @@ testAWSCLI:
     - vlt run --command="make -f Makefile.ci checkAwsLggedIn"
 
 deployCamelCaseConverterMavenToRegistry:
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/jdkmvn:latest
   stage: build
   script:
     - cd ./src/camelCase
@@ -29,3 +30,12 @@ test-variables:
    - vlt secrets
    - make -f Makefile.ci test
    - vlt run --command="make -f Makefile.ci testEnvSecrets"
+
+
+pipeline_job:
+  script:
+    - echo "This job runs only when files in $CI_PROJECT_DIR/pipeline/* are modified."
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - $CI_PROJECT_DIR/pipeline/**

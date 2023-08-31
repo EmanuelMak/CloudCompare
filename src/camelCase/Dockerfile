@@ -15,6 +15,5 @@ COPY ./src ./src
 
 # Build the project
 RUN mvn clean install
-RUN ls && cd target && ls > output.txt
 
 ENTRYPOINT [ "/bin/sh" ]

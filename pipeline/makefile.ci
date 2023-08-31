@@ -1,0 +1,19 @@
+DOCKER_IMAGE_TAG ?= latest
+
+pushToGitLabRegistry:
+	@export DOCKER_IMAGE_NAME=$$GIT_GITLAB_DOCKER_BASE_URL$$GIT_GITLAB_CLOUDCOMPARE_PATH/$$USECASE; \
+	echo "Logging into GitLab's Container Registry..."; \
+	docker login $$GIT_GITLAB_DOCKER_BASE_URL -u $$GIT_GITLAB_USERNAME -p $$GIT_GITLAB_CLOUDCOMPARE_TOKEN; \
+	echo "Logging into GitLab's Container Registry..."; \
+	echo GIT_GITLAB_CLOUDCOMPARE_TOKEN: $$GIT_GITLAB_CLOUDCOMPARE_TOKEN; \
+	echo GIT_GITLAB_DOCKER_BASE_URL: $$GIT_GITLAB_DOCKER_BASE_URL; \
+	echo GIT_GITLAB_CLOUDCOMPARE_PATH: $$GIT_GITLAB_CLOUDCOMPARE_PATH; \
+	echo DOCKER_IMAGE_NAME: $$DOCKER_IMAGE_NAME; \
+	echo GIT_GITLAB_USERNAME: $$GIT_GITLAB_USERNAME; \
+	echo $$GIT_GITLAB_CLOUDCOMPARE_TOKEN | docker login $$GIT_GITLAB_DOCKER_BASE_URL -u $$GIT_GITLAB_USERNAME --password-stdin; \
+	echo "Building Docker image..."; \
+	docker build -t $$DOCKER_IMAGE_NAME --file dockerfile.$$USECASE .; \
+	echo "Pushing Docker image to GitLab's Container Registry..."; \
+	docker push $$DOCKER_IMAGE_NAME; \
+
+
