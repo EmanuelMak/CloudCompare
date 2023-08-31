@@ -18,7 +18,7 @@ testAWSCLI:
     - vlt run --command="make -f Makefile.ci checkAwsLggedIn"
 
 deployCamelCaseConverterMavenToRegistry:
-  stage: Build
+  stage: build
   script:
     - cd ./src/camelCase
     - vlt run --command="make -f makefile.ci deployToGitlabPackageRegistry"
