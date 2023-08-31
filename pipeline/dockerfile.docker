@@ -1,0 +1,27 @@
+# Starting from Docker-in-Docker (Alpine-based) image
+FROM --platform=linux/amd64 docker:dind
+
+# Update and install necessary dependencies
+RUN apk update && apk add --no-cache \
+    curl \
+    ca-certificates \
+    openssl \
+    make \
+    unzip \
+    bash \
+    gnupg
+
+
+# Install VLT
+RUN curl -o vlt_linux_amd64.zip https://releases.hashicorp.com/vlt/0.2.2/vlt_0.2.2_linux_amd64.zip && \
+    unzip vlt_linux_amd64.zip && \
+    mv vlt /usr/local/bin/ && \
+    rm vlt_linux_amd64.zip
+
+# Cleanup
+RUN apk del curl gnupg && \
+    rm -rf /var/cache/apk/*
+
+# Test
+RUN docker --version && \
+    vlt --version

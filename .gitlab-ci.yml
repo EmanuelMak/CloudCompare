@@ -1,6 +1,7 @@
 image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare:latest
 
 stages:
+  - preinit
   - init
   - build
   - test
@@ -39,3 +40,21 @@ pipeline_job:
     - if: '$CI_COMMIT_BRANCH'
       changes:
         - $CI_PROJECT_DIR/pipeline/**
+
+
+updateDockerImages:
+  stage: preinit
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest # use the image we just built
+  services:
+    - docker:dind
+  script:
+    - echo "This job runs only when files in $CI_PROJECT_DIR/pipeline/* are modified."
+    - docker --version # Just to confirm Docker runs
+    - vlt --version # Just to confirm VLT runs
+    - cd ./pipeline
+    - vlt run --command="make -f Makefile.ci updateDockerImages"
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      changes:
+        - pipeline/**/*

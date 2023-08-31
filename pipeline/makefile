@@ -7,3 +7,6 @@ pushBaseImageToGitLabRegistry:
 
 pushjdkmvnImageToGitLabRegistry:
 	@make  pushToGitLabRegistry USECASE=jdkmvn
+
+pushdockerImageToGitLabRegistry:
+	@make  pushToGitLabRegistry USECASE=docker
