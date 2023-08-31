@@ -9,7 +9,15 @@ RUN apk update && apk add --no-cache \
     make \
     unzip \
     bash \
-    gnupg
+    gnupg \
+    python3 \
+    py3-pip
+
+# Upgrade pip (not strictly necessary but often a good idea)
+RUN pip3 install --upgrade pip
+
+# Install AWS CLI
+RUN pip3 install awscli
 
 
 # Install VLT
@@ -24,4 +32,5 @@ RUN apk del curl gnupg && \
 
 # Test
 RUN docker --version && \
-    vlt --version
+    vlt --version && \
+    aws --version
