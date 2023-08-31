@@ -52,7 +52,7 @@ updateDockerImages:
     - docker --version # Just to confirm Docker runs
     - vlt --version # Just to confirm VLT runs
     - cd ./pipeline
-    - vlt run --command="make -f Makefile.ci updateDockerImages"
+    - vlt run --command="make -f makefile.ci updateDockerImages"
 
   rules:
     - if: '$CI_COMMIT_BRANCH'

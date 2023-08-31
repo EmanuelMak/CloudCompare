@@ -19,8 +19,8 @@ pushToGitLabRegistry:
 
 updateDockerImages:
 	@echo "Updating Docker images..."
-	@make -f makefile.ci pushBaseImageToGitLabRegistry USECASE=base
-	@make -f makefile.ci pushjdkmvnImageToGitLabRegistry USECASE=jdkmvn
-	@make -f makefile.ci pushdockerImageToGitLabRegistry USECASE=docker
+	@make -f makefile.ci pushToGitLabRegistry USECASE=base
+	@make -f makefile.ci pushToGitLabRegistry USECASE=jdkmvn
+	@make -f makefile.ci pushToGitLabRegistry USECASE=docker
 	@echo "Docker images updated."
 
