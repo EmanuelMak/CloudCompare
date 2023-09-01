@@ -5,6 +5,7 @@ stages:
   - init
   - build
   - test
+  - deploy
 
 setVaultEnv:
   stage: init
@@ -25,22 +26,12 @@ deployCamelCaseConverterMavenToRegistry:
     - cd ./src/camelCase
     - vlt run --command="make -f makefile.ci deployToGitlabPackageRegistry"
 
-test-variables:
+testVltVariables:
   stage: init
   script:
    - vlt secrets
    - make -f Makefile.ci test
    - vlt run --command="make -f Makefile.ci testEnvSecrets"
-
-
-pipeline_job:
-  script:
-    - echo "This job runs only when files in $CI_PROJECT_DIR/pipeline/* are modified."
-  rules:
-    - if: '$CI_COMMIT_BRANCH'
-      changes:
-        - $CI_PROJECT_DIR/pipeline/**
-
 
 updateDockerImages:
   stage: preinit
@@ -69,3 +60,14 @@ buildAndPushToEcrSpringboot:
     - vlt run --command="make -f makefile.ci pushImageToAwsEcrRepo"
   dependencies:
     - deployCamelCaseConverterMavenToRegistry
+
+deploySringbootAppAwsBeanstalkEC2:
+  stage: deploy
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/awseb:latest # use the image we just built
+  services:
+    - docker:dind
+  script:
+    - cd apps/backend/springboot
+    - vlt run --command="make -f makefile.ci recreateAwsEbApp"
+  dependencies:
+    - buildAndPushToEcrSpringboot

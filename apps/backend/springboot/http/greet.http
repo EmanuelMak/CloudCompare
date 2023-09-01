@@ -1,7 +1,10 @@
-GET http://localhost:8080/greeting
+# @baseUrl = http://localhost
+# @baseUrl = http://localhost:8080
+@baseUrl = my-web-app-test.eba-9i2dtv5j.eu-central-1.elasticbeanstalk.com
+GET {{baseUrl}}/greeting
 
 ###
 
-GET http://localhost:8080/greeting?name=Jane
+GET {{baseUrl}}/greeting?name=Jane
 Content-Type: application/json
 

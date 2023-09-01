@@ -3,13 +3,13 @@ version: '3'
 services:
   api:
     image: 924961350014.dkr.ecr.eu-central-1.amazonaws.com/myrepo
-    # build:
-    #   context: ./
-    #   dockerfile: Dockerfile
-    #   args:
-    #     GIT_GITLAB_TOKEN: ${GIT_GITLAB_TOKEN}
-    #     GIT_GITLAB_BASE_URL: ${GIT_GITLAB_BASE_URL}
-    #     GIT_GITLAB_CLOUDCOMPARE_ID: ${GIT_GITLAB_CLOUDCOMPARE_ID}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        GIT_GITLAB_TOKEN: ${GIT_GITLAB_TOKEN}
+        GIT_GITLAB_BASE_URL: ${GIT_GITLAB_BASE_URL}
+        GIT_GITLAB_CLOUDCOMPARE_ID: ${GIT_GITLAB_CLOUDCOMPARE_ID}
     ports:
       - 8080:8080
 

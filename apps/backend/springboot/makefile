@@ -33,3 +33,11 @@ createAwsEcrRepo:
 
 loginToAwsEcrRepo:
 	@vlt run --command="make -f makefile.ci loginToAwsEcrRepo"
+
+createAwsBeanstalkApplication:
+# Create environment
+	@eb create your-environment-name &&\
+	if [ $? -ne 0 ]; then
+    	echo "Error occurred during environment creation. Terminating environment."
+    	eb terminate your-environment-name -f
+	fi

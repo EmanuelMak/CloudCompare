@@ -33,11 +33,17 @@ createAwsEcrRepo:
 	else \
 		echo "Repository $(REPO_NAME) already exists in region $(REGION)."; \
 	fi
+	@make -f makefile.ci setrepoPolicy
+
+setrepoPolicy:
+	@aws ecr set-repository-policy --repository-name $(REPO_NAME) --policy-text file://ecr_policy.json --region $(REGION)
+	@aws iam attach-role-policy --role-name aws-elasticbeanstalk-ec2-role --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
 loginToAwsEcrRepo:
 	@REPO_URI=$$(aws ecr describe-repositories --region eu-central-1 --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
 	aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $$REPO_URI
 pushImageToAwsEcrRepo:
-	@docker-compose build
+	@docker-compose -f docker-compose.build.yml build
 	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
 	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $$REPO_URI &&\
 	docker tag camelcase-converter-springboot-app $$REPO_URI:latest
@@ -55,8 +61,7 @@ deleteAwsEcrRepo:
 	@echo "Repository $(REPO_NAME) deleted successfully."
 
 
-testrepoURI:
-	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
-	echo "REPO_URI is: $$REPO_URI" &&\
-	docker images | grep camelcase-converter-springboot-app
-
+recreateAwsEbApp:
+	@eb terminate  my-web-app-test --force
+	@eb create my-web-app-test ||\
+	eb terminate  my-web-app-test --force
