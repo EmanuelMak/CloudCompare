@@ -2,7 +2,7 @@ version: '3'
 
 services:
   api:
-    image: 924961350014.dkr.ecr.eu-central-1.amazonaws.com/myrepo
+    image: camelcase-converter-springboot-app
     build:
       context: ./
       dockerfile: Dockerfile
