@@ -10,3 +10,6 @@ pushjdkmvnImageToGitLabRegistry:
 
 pushdockerImageToGitLabRegistry:
 	@make  pushToGitLabRegistry USECASE=docker
+
+pushawsebImageToGitLabRegistry:
+	@make  pushToGitLabRegistry USECASE=awseb

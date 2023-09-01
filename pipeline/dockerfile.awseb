@@ -1,0 +1,51 @@
+# Use the official Debian-based Python image as the base image
+FROM --platform=linux/amd64 python:3.9-slim-bullseye
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    groff \
+    less \
+    curl \
+    unzip \
+    git \
+    bash \
+    ca-certificates \
+    lsb-release \
+    gnupg \
+    gpg \
+    gcc \
+    libffi-dev \
+    openssl \
+    libssl-dev \
+    build-essential zlib1g-dev libssl-dev libncurses-dev \
+    libffi-dev libsqlite3-dev libreadline-dev libbz2-dev
+
+# Install virtualenv
+RUN pip install virtualenv
+
+# Clone the Elastic Beanstalk CLI setup repository
+RUN git clone https://github.com/aws/aws-elastic-beanstalk-cli-setup.git
+
+# Install the EB CLI using the provided installer script
+RUN python ./aws-elastic-beanstalk-cli-setup/scripts/ebcli_installer.py
+
+# Ensure the path to the newly installed eb executable is in the PATH
+ENV PATH=/root/.ebcli-virtual-env/executables:$PATH
+
+# Test if the EB CLI installation is correct
+RUN eb --version 
+# Install AWS CLI using pip
+RUN pip install --no-cache-dir awscli
+
+
+
+# Install VLT
+RUN curl -o vlt_linux_amd64.zip https://releases.hashicorp.com/vlt/0.2.2/vlt_0.2.2_linux_amd64.zip && \
+    unzip vlt_linux_amd64.zip && \
+    mv vlt /usr/local/bin/ && \
+    rm vlt_linux_amd64.zip
+
+# test
+RUN aws --version && \
+    vlt --version && \
+    eb --version
