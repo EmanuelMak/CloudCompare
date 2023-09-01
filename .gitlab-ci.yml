@@ -68,6 +68,8 @@ deploySringbootAppAwsBeanstalkEC2:
     - docker:dind
   script:
     - cd apps/backend/springboot
+    - mkdir -p ./.elasticbeanstalk
+    - mv -f ./config.yml ./.elasticbeanstalk/
     - vlt run --command="make -f makefile.ci recreateAwsEbApp"
   dependencies:
     - buildAndPushToEcrSpringboot
