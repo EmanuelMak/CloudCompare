@@ -46,9 +46,11 @@ pushImageToAwsEcrRepo:
 	@docker-compose -f docker-compose.build.yml build
 	@docker ps
 	@docker ps -a
+	@docker images
 	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
 	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $$REPO_URI &&\
 	docker tag camelcase-converter-springboot-app $$REPO_URI:latest
+	@docker images
 	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
 	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
 	echo "Pushing to: $$REPO_URI" &&\
