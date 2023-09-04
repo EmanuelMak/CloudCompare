@@ -23,5 +23,6 @@ updateDockerImages:
 	@make -f makefile.ci pushToGitLabRegistry USECASE=jdkmvn
 	@make -f makefile.ci pushToGitLabRegistry USECASE=docker
 	@make -f makefile.ci pushToGitLabRegistry USECASE=awseb
+	@make -f makefile.ci pushToGitLabRegistry USECASE=azure
 	@echo "Docker images updated."
 

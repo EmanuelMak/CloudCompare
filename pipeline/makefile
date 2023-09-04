@@ -13,3 +13,8 @@ pushdockerImageToGitLabRegistry:
 
 pushawsebImageToGitLabRegistry:
 	@make  pushToGitLabRegistry USECASE=awseb
+
+pushazureImageToGitLabRegistry:
+	@make  pushToGitLabRegistry USECASE=azure
+
+
