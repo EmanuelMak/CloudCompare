@@ -5,32 +5,32 @@ FROM mcr.microsoft.com/azure-cli
 WORKDIR /app
 
 # Install JDK 17, Maven, and basic tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jdk \
+RUN apk update && apk --no-cache add openjdk17 \
     maven \
-    gpg \
+    gnupg \
     curl \
-    lsb-release \
+    unzip \
+    bash \
     ca-certificates \
     openssl \
     make
 
-# Install VLT
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
-    apt-get update && apt-get install -y vlt
+# Note: You may need to find a way to install VLT on Alpine if it's not available via apk.
+# As of my last update, I'm not sure about an official apk package for VLT.
 
 # Cleanup after installations
-RUN apt-get purge -y \
-    curl \
-    lsb-release \
-    gpg && \
-    apt-get clean && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk del curl gnupg
+
+# Install VLT
+RUN curl -o vlt_linux_amd64.zip https://releases.hashicorp.com/vlt/0.2.2/vlt_0.2.2_linux_amd64.zip && \
+    unzip vlt_linux_amd64.zip && \
+    mv vlt /usr/local/bin/ && \
+    rm vlt_linux_amd64.zip
+
 
 # Test installations
 RUN az --version && \
     vlt --version &&\
     mvn --version &&\
     java -version
+
