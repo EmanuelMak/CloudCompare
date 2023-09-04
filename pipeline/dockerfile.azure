@@ -1,11 +1,13 @@
-# Use a Maven base image
-FROM --platform=linux/amd64 maven:3.8.2-openjdk-17-slim AS build
+# Use the official Azure CLI Docker image as a base
+FROM mcr.microsoft.com/azure-cli
 
 # Set the working directory
 WORKDIR /app
 
-# install basic tools
+# Install JDK 17, Maven, and basic tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jdk \
+    maven \
     gpg \
     curl \
     lsb-release \
@@ -18,11 +20,6 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/sh
     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
     apt-get update && apt-get install -y vlt
 
-# Install Azure CLI
-RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/microsoft.gpg && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-get update && apt-get install -y azure-cli
-
 # Cleanup after installations
 RUN apt-get purge -y \
     curl \
@@ -32,8 +29,8 @@ RUN apt-get purge -y \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-#test
+# Test installations
 RUN az --version && \
     vlt --version &&\
-    mvn --version
-
+    mvn --version &&\
+    java -version
