@@ -1,0 +1,9 @@
+azureLogin:
+	@az login --service-principal --username $$AZURE_CLIENT_ID --password $$AZURE_CLIENT_SECRET --tenant $$AZURE_TENANT_ID
+
+buildAzureFunction:
+	@mvn dependency:go-offline -s ./settings.xml
+	@mvn clean package
+
+deployAzureFunction:
+	@mvn azure-functions:deploy -s ./settings.xml

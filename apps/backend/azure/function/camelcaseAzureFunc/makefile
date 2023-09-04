@@ -20,4 +20,13 @@ undeploy:
 	az group delete --name java-functions-group
 
 login:
-	az login
+	vlt run --command="make -f makefile.ci login"
+
+buildAzureFunction:
+	vlt run --command="make -f makefile.ci buildAzureFunction"
+
+deployAzureFunction:
+	vlt run --command="make -f makefile.ci deployAzureFunction"
+
+azureLogin:
+	vlt run --command="make -f makefile.ci azureLogin"

@@ -73,3 +73,17 @@ deploySringbootAppAwsBeanstalkEC2:
     - vlt run --command="make -f makefile.ci recreateAwsEbApp"
   dependencies:
     - buildAndPushToEcrSpringboot
+
+buildAzureFunction:
+  stage: build
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/jdkmvn:latest
+  script:
+    - cd /apps/backend/azure/function/camelcaseAzureFunc
+    - vlt run --command="make -f makefile.ci buildAzureFunction"
+
+deployAzureFunction:
+  stage: deploy
+  script:
+    - cd ./apps/backend/azure/function/camelcaseAzureFunc
+    - vlt run --command="make -f makefile.ci azureLogin"
+    - vlt run --command="make -f makefile.ci deployAzureFunction"
