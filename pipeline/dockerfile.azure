@@ -18,14 +18,17 @@ RUN apk update && apk --no-cache add openjdk17 \
 # Note: You may need to find a way to install VLT on Alpine if it's not available via apk.
 # As of my last update, I'm not sure about an official apk package for VLT.
 
-# Cleanup after installations
-RUN apk del curl gnupg
+
 
 # Install VLT
 RUN curl -o vlt_linux_amd64.zip https://releases.hashicorp.com/vlt/0.2.2/vlt_0.2.2_linux_amd64.zip && \
     unzip vlt_linux_amd64.zip && \
     mv vlt /usr/local/bin/ && \
     rm vlt_linux_amd64.zip
+
+
+# Cleanup after installations
+RUN apk del curl gnupg
 
 
 # Test installations
