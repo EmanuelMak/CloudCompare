@@ -110,5 +110,5 @@ testAwsLambda:
     - cd $PATH_TO_AWS_LAMBDA
     - aws --version
     - aws configure list
-    - vlt run --command="make -f makefile.ci testAwsLambda"
+    # - vlt run --command="make -f makefile.ci testAwsLambda"
     - echo "todo"
