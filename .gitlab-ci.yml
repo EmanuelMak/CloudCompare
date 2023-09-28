@@ -1,11 +1,14 @@
 image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare:latest
 
+variables:
+  PATH_TO_AWS_LAMBDA: ./apps/backend/aws/camelcaseLambda
 stages:
   - preinit
   - init
   - build
   - test
   - deploy
+  - testDeploy
 
 setVaultEnv:
   stage: init
@@ -88,3 +91,22 @@ deploySringbootAppAwsBeanstalkEC2:
 #     - cd ./apps/backend/azure/function/camelcaseAzureFunc
 #     - vlt run --command="make -f makefile.ci azureLogin"
 #     - vlt run --command="make -f makefile.ci deployAzureFunction"
+buildAwsLambda:
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/jdkmvn:latest
+  stage: build
+  script:
+    - echo "todo"
+
+deployAwsLambda:
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest
+  stage: deploy
+  script:
+    - echo "todo"
+
+testAwsLambda:
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest
+  stage: testDeploy
+  script:
+    - cd $PATH_TO_AWS_LAMBDA
+    - vlt run --command="make -f makefile.ci testAwsLambda"
+    - echo "todo"
