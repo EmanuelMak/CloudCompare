@@ -66,8 +66,8 @@ deleteAwsEcrRepo:
 
 
 recreateAwsEbApp:
-	@eb terminate  my-web-app-test --force
-	@eb create my-web-app-test ||\
+	-eb terminate  my-web-app-test --force
+	-eb create my-web-app-test ||\
 	eb terminate  my-web-app-test --force
 
 undeployAwsEbApp:
