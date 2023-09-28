@@ -16,5 +16,7 @@ pushawsebImageToGitLabRegistry:
 
 pushazureImageToGitLabRegistry:
 	@make  pushToGitLabRegistry USECASE=azure
+pushawsecsImageToGitLabRegistry:
+	@make  pushToGitLabRegistry USECASE=awsecs
 
 

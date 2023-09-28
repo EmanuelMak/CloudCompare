@@ -1,0 +1,39 @@
+# Use an official Alpine Linux image as the base image
+FROM alpine:latest
+
+# Install necessary packages
+RUN apk update && apk --no-cache add \
+    python3 \
+    py3-pip \
+    jq \
+    curl \
+    gnupg \
+    unzip \
+    bash \
+    ca-certificates \
+    openssl \
+    make
+
+# Install the AWS CLI
+RUN pip3 install --no-cache-dir --upgrade awscli
+
+# Install the ECS CLI
+RUN curl -Lo ecs-cli https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest && \
+    chmod +x ecs-cli && \
+    mv ecs-cli /usr/local/bin/
+
+# Install VLT
+RUN curl -o vlt_linux_amd64.zip https://releases.hashicorp.com/vlt/0.2.2/vlt_0.2.2_linux_amd64.zip && \
+    unzip vlt_linux_amd64.zip && \
+    mv vlt /usr/local/bin/ && \
+    rm vlt_linux_amd64.zip
+
+# Cleanup after installations
+RUN apk del curl gnupg
+
+
+# test
+RUN aws --version && \
+    vlt --version && \
+    ecs-cli --version
+
