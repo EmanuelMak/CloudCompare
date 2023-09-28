@@ -1,7 +1,7 @@
 image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare:latest
 
 variables:
-  PATH_TO_AWS_LAMBDA: ./apps/backend/aws/camelcaseLambda
+  PATH_TO_AWS_LAMBDA: ./apps/backend/cammelCaseLambda
 stages:
   - preinit
   - init
