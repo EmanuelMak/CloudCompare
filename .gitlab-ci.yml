@@ -105,8 +105,10 @@ deployAwsLambda:
 
 testAwsLambda:
   image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest
-  stage: testDeploy
+  stage: preinit
   script:
     - cd $PATH_TO_AWS_LAMBDA
+    - aws --version
+    - aws configure list
     - vlt run --command="make -f makefile.ci testAwsLambda"
     - echo "todo"
