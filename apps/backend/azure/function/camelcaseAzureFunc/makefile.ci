@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 
 azureLogin:
+	@echo "azure_client_id: $$AZURE_CLIENT_ID"
 	@export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1 && \
 	export PYTHONHTTPSVERIFY=0 && \
 	export REQUESTS_CA_BUNDLE=/dev/null && \

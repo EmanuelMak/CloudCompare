@@ -77,12 +77,12 @@ deploySringbootAppAwsBeanstalkEC2:
   dependencies:
     - buildAndPushToEcrSpringboot
 
-# buildAzureFunction:
-#   stage: build
-#   image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/azure:latest
-#   script:
-#     - cd ./apps/backend/azure/function/camelcaseAzureFunc
-#     - vlt run --command="make -f makefile.ci buildAzureFunction"
+buildAzureFunction:
+  stage: build
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/azure:latest
+  script:
+    - cd ./apps/backend/azure/function/camelcaseAzureFunc
+    - vlt run --command="make -f makefile.ci buildAzureFunction"
 
 # deployAzureFunction:
 #   stage: deploy
