@@ -1,5 +1,10 @@
 # @baseUrl = http://localhost
-# @baseUrl = http://localhost:8080
-@baseUrl = my-web-app-test.eba-9i2dtv5j.eu-central-1.elasticbeanstalk.com
+ @baseUrl = http://localhost:8080
+#@baseUrl = my-web-app-test.eba-9i2dtv5j.eu-central-1.elasticbeanstalk.com
 {{baseUrl}}/convertToCamelCase?text=your_text_here
+Content-Type: application/json
+
+###
+
+GET {{baseUrl}}/actuator/health
 Content-Type: application/json

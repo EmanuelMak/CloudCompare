@@ -64,18 +64,18 @@ buildAndPushToEcrSpringboot:
   dependencies:
     - deployCamelCaseConverterMavenToRegistry
 
-deploySringbootAppAwsBeanstalkEC2:
-  stage: deploy
-  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/awseb:latest # use the image we just built
-  services:
-    - docker:dind
-  script:
-    - cd apps/backend/springboot
-    - mkdir -p ./.elasticbeanstalk
-    - mv -f ./config.yml ./.elasticbeanstalk/
-    - vlt run --command="make -f makefile.ci recreateAwsEbApp"
-  dependencies:
-    - buildAndPushToEcrSpringboot
+# deploySringbootAppAwsBeanstalkEC2:
+#   stage: deploy
+#   image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/awseb:latest # use the image we just built
+#   services:
+#     - docker:dind
+#   script:
+#     - cd apps/backend/springboot
+#     - mkdir -p ./.elasticbeanstalk
+#     - mv -f ./config.yml ./.elasticbeanstalk/
+#     - vlt run --command="make -f makefile.ci recreateAwsEbApp"
+#   dependencies:
+#     - buildAndPushToEcrSpringboot
 
 buildAzureFunction:
   stage: build
