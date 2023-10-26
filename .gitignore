@@ -40,6 +40,8 @@ surefire-reports/
 maven-status/
 
 
-
+.teraform/*
+.terraform/
 secrets.yaml
 */secrets.yaml
+*.tfvars
