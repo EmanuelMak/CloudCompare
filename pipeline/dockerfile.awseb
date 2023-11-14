@@ -49,3 +49,6 @@ RUN curl -o vlt_linux_amd64.zip https://releases.hashicorp.com/vlt/0.2.2/vlt_0.2
 RUN aws --version && \
     vlt --version && \
     eb --version
+
+
+     

@@ -46,3 +46,5 @@ createAwsBeanstalkApplication:
     	echo "Error occurred during environment creation. Terminating environment." ;\
     	eb terminate your-environment-name -f ;\
 	fi
+pushToDockerhub:
+	@vlt run --command="make -f makefile.ci pushToDockerhub"

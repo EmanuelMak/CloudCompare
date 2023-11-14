@@ -72,3 +72,13 @@ recreateAwsEbApp:
 
 undeployAwsEbApp:
 	@eb terminate  my-web-app-test --force
+
+pushToDockerhub:
+	@docker-compose -f docker-compose.build.yml build
+	docker login --u emanuelmak --password-stdin $$DOCKER_TOKEN &&\
+	docker tag camelcase-converter-springboot-app emanuelmak/camelcase-converter-springboot-app:latest
+	@docker images
+	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
+	echo "Pushing to: dockerhub &&\
+	docker push emanuelmak/camelcase-converter-springboot-app:latest
+	@echo "Image pushed successfully."

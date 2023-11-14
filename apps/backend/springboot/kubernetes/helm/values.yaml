@@ -1,0 +1,27 @@
+camelCase:
+  replicaCount: 2
+  image:
+    repository: <dockerhub-repo-for-app1>
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+checkPrime:
+  replicaCount: 2
+  image:
+    repository: <dockerhub-repo-for-app2>
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80

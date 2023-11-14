@@ -1,0 +1,8 @@
+@baseUrl = http://docker-helloworld.orangemeadow-490e5d87.germanywestcentral.azurecontainerapps.io/
+
+###
+{{{{baseUrl}}}}
+
+
+###
+https://google.de

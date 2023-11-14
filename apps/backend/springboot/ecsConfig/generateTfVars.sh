@@ -1,5 +1,6 @@
 #!/bin/bash
-
+rm -f "terraform.tfvars"
+rm -f "variables.tf"
 # Create an empty tfvars file
 > terraform.tfvars
 export ECR_REPO_URI=$(aws ecr describe-repositories --region $AWS_DEFAULT_REGION --repository-names myrepo --query "repositories[0].repositoryUri" --output text)
