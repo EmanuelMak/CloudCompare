@@ -75,7 +75,7 @@ undeployAwsEbApp:
 
 pushToDockerhub:
 	@docker-compose -f docker-compose.build.yml build
-	docker login --u emanuelmak --password-stdin $$DOCKER_TOKEN &&\
+	echo $DOCKER_TOKEN | docker login -u emanuelmak --password-stdin &&\
 	docker tag camelcase-converter-springboot-app emanuelmak/camelcase-converter-springboot-app:latest
 	@docker images
 	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
