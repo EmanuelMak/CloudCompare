@@ -63,6 +63,16 @@ buildAndPushToEcrSpringboot:
     - vlt run --command="make -f makefile.ci pushImageToAwsEcrRepo"
   dependencies:
     - deployCamelCaseConverterMavenToRegistry
+buildAndPushToDockerhubSpringboot:
+  stage: build
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest # use the image we just built
+  services:
+    - docker:dind
+  script:
+    - cd apps/backend/springboot
+    - vlt run --command="make -f makefile.ci pushToDockerhub"
+  dependencies:
+    - deployCamelCaseConverterMavenToRegistry
 
 # deploySringbootAppAwsBeanstalkEC2:
 #   stage: deploy
@@ -77,12 +87,12 @@ buildAndPushToEcrSpringboot:
 #   dependencies:
 #     - buildAndPushToEcrSpringboot
 
-buildAzureFunction:
-  stage: build
-  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/azure:latest
-  script:
-    - cd ./apps/backend/azure/function/camelcaseAzureFunc
-    - vlt run --command="make -f makefile.ci buildAzureFunction"
+# buildAzureFunction:
+#   stage: build
+#   image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/azure:latest
+#   script:
+#     - cd ./apps/backend/azure/function/camelcaseAzureFunc
+#     - vlt run --command="make -f makefile.ci buildAzureFunction"
 
 # deployAzureFunction:
 #   stage: deploy
