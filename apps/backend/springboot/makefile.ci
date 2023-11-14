@@ -79,6 +79,6 @@ pushToDockerhub:
 	docker tag camelcase-converter-springboot-app emanuelmak/camelcase-converter-springboot-app:latest
 	@docker images
 	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
-	echo "Pushing to: dockerhub &&\
+	echo "Pushing to: dockerhub" &&\
 	docker push emanuelmak/camelcase-converter-springboot-app:latest
 	@echo "Image pushed successfully."
