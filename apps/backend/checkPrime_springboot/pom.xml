@@ -64,7 +64,7 @@
 	<repositories>
 		<repository>
 			<id>gitlab-maven</id>
-			<url>https://${GIT_GITLAB_BASE_URL}/api/v4/projects/${GIT_GITLAB_checkPrime_ID}/packages/maven</url>
+			<url>https://${GIT_GITLAB_BASE_URL}/api/v4/projects/${GIT_GITLAB_CLOUDCOMPARE_ID}/packages/maven</url>
 		</repository>
 	</repositories>
 	<build>
