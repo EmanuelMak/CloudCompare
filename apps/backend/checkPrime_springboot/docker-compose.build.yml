@@ -5,7 +5,7 @@ services:
     image: prime-numbers-checker-springboot-app
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       args:
         GIT_GITLAB_TOKEN: ${GIT_GITLAB_TOKEN}
         GIT_GITLAB_BASE_URL: ${GIT_GITLAB_BASE_URL}
