@@ -1,4 +1,4 @@
-package de.th.ro.thesis.emanuel.checkPrime;
+package de.th.ro.thesis.emanuel.checkprime;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
