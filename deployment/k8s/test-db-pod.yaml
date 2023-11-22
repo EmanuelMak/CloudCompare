@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-test-pod
+  namespace: default
+spec:
+  containers:
+  - name: postgres
+    image: postgres
+    env:
+    - name: PGPASSWORD
+      value: "init1000"
+    command: ["sleep"]
+    args: ["infinity"]

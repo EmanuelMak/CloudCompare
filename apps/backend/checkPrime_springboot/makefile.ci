@@ -1,0 +1,83 @@
+REGION=eu-central-1
+REPO_NAME=myrepo
+
+startSpringbootDocker:
+	@echo GIT_GITLAB_TOKEN $$GIT_GITLAB_TOKEN
+	@echo GIT_GITLAB_BASE_URL $$GIT_GITLAB_BASE_URL
+	@echo GIT_GITLAB_checkPrime_ID $$GIT_GITLAB_checkPrime_ID
+	@docker build --build-arg GIT_GITLAB_TOKEN=$$GIT_GITLAB_TOKEN \
+             --build-arg GIT_GITLAB_BASE_URL=$$GIT_GITLAB_BASE_URL \
+             --build-arg GIT_GITLAB_checkPrime_ID=$$GIT_GITLAB_checkPrime_ID \
+             -t camelcase-converter-springboot-app .
+	@docker run -p 8080:8080 my-spring-boot-app
+
+startComposeDocker:
+	@echo GIT_GITLAB_TOKEN $$GIT_GITLAB_TOKEN
+	@echo GIT_GITLAB_BASE_URL $$GIT_GITLAB_BASE_URL
+	@echo GIT_GITLAB_checkPrime_ID $$GIT_GITLAB_checkPrime_ID
+	@docker-compose up --build
+	@docker ps
+
+
+getRepos:
+	@aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME)
+
+createAwsEcrRepo:
+	@echo "REGION: $(REGION)"
+	@echo "REPO_NAME: $(REPO_NAME)"
+	@echo "Checking if repository $(REPO_NAME) exists in region $(REGION)..."
+	@RESULT=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) 2>&1); \
+	if echo $$RESULT | grep -q 'RepositoryNotFoundException'; then \
+		CREATE_RESULT=$$(aws ecr create-repository --repository-name $(REPO_NAME) --region $(REGION) 2>&1); \
+		echo did not exist created one: \n $$CREATE_RESULT; \
+	else \
+		echo "Repository $(REPO_NAME) already exists in region $(REGION)."; \
+	fi
+	@make -f makefile.ci setrepoPolicy
+
+setrepoPolicy:
+	@aws ecr set-repository-policy --repository-name $(REPO_NAME) --policy-text file://ecr_policy.json --region $(REGION)
+	@aws iam attach-role-policy --role-name aws-elasticbeanstalk-ec2-role --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
+loginToAwsEcrRepo:
+	@REPO_URI=$$(aws ecr describe-repositories --region eu-central-1 --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
+	aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $$REPO_URI
+pushImageToAwsEcrRepo:
+	@docker-compose -f docker-compose.build.yml build
+	@docker ps
+	@docker ps -a
+	@docker images
+	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
+	aws ecr get-login-password --region $(REGION) | docker login --username AWS --password-stdin $$REPO_URI &&\
+	docker tag camelcase-converter-springboot-app $$REPO_URI:latest
+	@docker images
+	@echo "Pushing image to repository $(REPO_NAME) in region $(REGION)..."
+	@REPO_URI=$$(aws ecr describe-repositories --region $(REGION) --repository-names $(REPO_NAME) --query "repositories[0].repositoryUri" --output text) &&\
+	echo "Pushing to: $$REPO_URI" &&\
+	docker images | grep camelcase-converter-springboot-app &&\
+	docker images | grep $$REPO_URI &&\
+	docker push $$REPO_URI:latest
+	@echo "Image pushed successfully."
+
+deleteAwsEcrRepo:
+	@echo "Deleting repository $(REPO_NAME) from region $(REGION)..."
+	@aws ecr delete-repository --repository-name $(REPO_NAME) --region $(REGION) --force
+	@echo "Repository $(REPO_NAME) deleted successfully."
+
+
+recreateAwsEbApp:
+	-eb terminate  my-web-app-test --force
+	-eb create my-web-app-test ||\
+	eb terminate  my-web-app-test --force
+
+undeployAwsEbApp:
+	@eb terminate  my-web-app-test --force
+
+pushToDockerhub:
+	@docker-compose -f docker-compose.build.yml build
+	echo $$DOCKER_TOKEN | docker login -u emanuelmak --password-stdin &&\
+	docker tag prime-numbers-checker-springboot-app emanuelmak/prime-numbers-checker-springboot-app:latest
+	@docker images
+	@echo "Pushing to: dockerhub" &&\
+	docker push emanuelmak/prime-numbers-checker-springboot-app:latest
+	@echo "Image pushed successfully."

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camelcase-deployment  # This should match the HPA's scaleTargetRef.name
+spec:
+  replicas: {{ .Values.camelCase.replicaCount }}
+  selector:
+    matchLabels:
+      app: camelCase
+  template:
+    metadata:
+      labels:
+        app: camelCase
+    spec:
+      tolerations:
+        - key: "lifecycle"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: "lifecycle"
+                operator: "In"
+                values:
+                - "spot"
+      containers:
+      - name: camelcase
+        image: {{ .Values.camelCase.image.repository }}
+        ports:
+        - containerPort: {{ .Values.camelCase.service.internalPort }}
+        resources:
+          requests:
+            cpu: "250m"
+          limits:
+            cpu: "500m"

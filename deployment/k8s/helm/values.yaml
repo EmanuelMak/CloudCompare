@@ -1,0 +1,38 @@
+camelCase:
+  replicaCount: 2
+  image:
+    repository: emanuelmak/camelcase-converter-springboot-app:latest
+    pullPolicy: IfNotPresent
+  service:
+    externalPort: 80
+    internalPort: 8080
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+checkPrime:
+  replicaCount: 2
+  image:
+    repository: emanuelmak/prime-numbers-checker-springboot-app:latest
+    pullPolicy: IfNotPresent
+  service:
+    externalPort: 80
+    internalPort: 8080
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+
+metrics-server:
+  args:
+    - --kubelet-insecure-tls
+
+ingress-nginx:
+  controller:
+    service:
+      type: LoadBalancer
+      externalTrafficPolicy: Local

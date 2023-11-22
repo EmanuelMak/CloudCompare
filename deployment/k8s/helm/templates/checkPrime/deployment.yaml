@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkprime-deployment
+spec:
+  replicas: {{ .Values.checkPrime.replicaCount }}
+  selector:
+    matchLabels:
+      app: checkPrime
+  template:
+    metadata:
+      labels:
+        app: checkPrime
+    spec:
+      tolerations:
+        - key: "lifecycle"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: "lifecycle"
+                operator: "In"
+                values:
+                - "spot"
+      containers:
+      - name: checkprime
+        image: {{ .Values.checkPrime.image.repository }}
+        ports:
+        - containerPort: {{ .Values.checkPrime.service.internalPort }}
+        resources:
+          requests:
+            cpu: "250m"
+          limits:
+            cpu: "500m"
+        env:
+        - name: DB_HOST
+          value: {{ .Values.checkPrime.db.host }}
+        - name: DB_NAME
+          value: {{ .Values.checkPrime.db.name }}
+        - name: DB_USERNAME
+          value: {{ .Values.checkPrime.db.username }}
+        - name: DB_PASSWORD
+          value: {{ .Values.checkPrime.db.password }}
