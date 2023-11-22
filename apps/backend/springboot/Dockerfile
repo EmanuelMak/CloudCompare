@@ -41,7 +41,7 @@ FROM openjdk:17-slim
 # Set the working directory
 WORKDIR /app
 # Copy the built JAR from the build stage
-COPY --from=build /app/target/cloudCompare-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY --from=build /app/target/camelCase-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Set the command to run your application
 CMD ["java", "-jar", "/app/app.jar"]
