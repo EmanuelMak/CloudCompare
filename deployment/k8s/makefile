@@ -26,7 +26,7 @@ helmInstall:
 	- cd ./helm && helm install thesis-cloudcompare-release . -f values.yaml -f external-values.yaml
 
 helmDelete:
-	- cd ./helm && helm delete thesis-cloudcompare-release . -f values.yaml -f external-values.yaml
+	- cd ./helm && helm delete thesis-cloudcompare-release . 
 
 helmDependencyUpdate:
 	- helm dependency update ./helm
@@ -42,11 +42,12 @@ applyNecessaryChanges:
 	- kubectl patch deployment test-release-metrics-server -n default --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'
 	- helm install my-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --set controller.service.type=LoadBalancer --set controller.service.externalTrafficPolicy=Local
 listEverything:
-	-  kubectl get all -n default
-	- helm list
-	- kubectl get pods
+	kubectl get all -n default
+	helm list
+	kubectl get pods
 
-
+getLogs:
+	kubectl logs $$POD_NAME
 getLoadbalancerurl:
 	- kubectl get service thesis-cloudcompare-release-ingress-nginx-controller
 
