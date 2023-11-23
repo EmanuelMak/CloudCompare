@@ -1,0 +1,36 @@
+SHELL = /bin/bash
+ROLE_NAME=MyLambdaExecutionRole
+POLICY_ARN=arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+ROLE_EXISTS := $(shell aws iam get-role --role-name $(ROLE_NAME) 2>/dev/null)
+
+
+build:
+	@mvn clean package
+
+deploy:
+	-echo "Deploying lambda function..." && \
+	aws lambda create-function \
+		--function-name camelCaseLambdaFunction \
+		--runtime java17 \
+		--role arn:aws:iam::$$AWS_ID:role/MyLambdaExecutionRole \
+		--handler de.th.ro.thesis.emanuel.cloudCompare.MyLambdaHandler::convertCammelCase \
+		--zip-file fileb://target/cammelCaseLambda-1.0-SNAPSHOT.jar && \
+	echo "Lambda function deployed successfully."
+
+createRole:
+	@if [ -z "$(ROLE_EXISTS)" ]; then \
+		echo "Creating role $(ROLE_NAME)..."; \
+		aws iam create-role --role-name $(ROLE_NAME) --assume-role-policy-document file://assume_role_policy.json; \
+		echo "Role $(ROLE_NAME) created successfully."; \
+	else \
+		echo "Role $(ROLE_NAME) already exists. Skipping creation."; \
+	fi
+	@echo "Attaching policy $(POLICY_ARN) to role $(ROLE_NAME)..."
+	@aws iam attach-role-policy --role-name $(ROLE_NAME) --policy-arn $(POLICY_ARN)
+	@echo "Policy attached successfully."
+
+testAwsLambda:
+	@aws lambda invoke --function-name camelCaseLambdaFunction --cli-binary-format raw-in-base64-out --payload '"hello_world"' /dev/stdout \
+
+
+
