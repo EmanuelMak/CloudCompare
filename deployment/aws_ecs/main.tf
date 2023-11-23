@@ -55,13 +55,22 @@ resource "aws_subnet" "subnet2" {
   }
 }
 
-# Additional subnet for RDS
+# Additional subnets for RDS
 resource "aws_subnet" "rds_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 3)
   availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "c")
   tags = {
     Name                  = "rds_subnet"
+    EM_ECS_DB_Subnet_Cost = "RDS Subnet"
+  }
+}
+resource "aws_subnet" "rds_subnet1" {
+  vpc_id            = aws_vpc.main_vpc.id
+  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 4)
+  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
+  tags = {
+    Name                  = "rds_subnet1"
     EM_ECS_DB_Subnet_Cost = "RDS Subnet"
   }
 }
@@ -328,7 +337,7 @@ resource "aws_lb_target_group" "prime_numbers_checker_tg" {
 #############################  VPC DB subnet group ######################
 resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "my_db_subnet_group"
-  subnet_ids = [ aws_subnet.rds_subnet.id]
+  subnet_ids = [ aws_subnet.rds_subnet.id, aws_subnet.rds_subnet1.id]
 
   tags = {
     Name = "my_db_subnet_group"
