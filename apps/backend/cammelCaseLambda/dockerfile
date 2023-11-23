@@ -1,0 +1,20 @@
+# Use Maven with OpenJDK to build the project
+FROM --platform=linux/amd64 maven:3.8.2-openjdk-17-slim as builder
+
+# Copy your source code
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+
+# Build the project
+RUN mvn clean package
+
+# Use Amazon Corretto for the runtime image
+FROM amazoncorretto:17
+
+WORKDIR /app
+
+# Copy the built JAR file from the builder stage
+COPY --from=builder /usr/src/myapp/target/cammelCaseLambda-1.0-SNAPSHOT.jar /app/cammelCaseLambda.jar
+
+# Command to run the application
+CMD ["java", "-jar", "/app/cammelCaseLambda.jar"]

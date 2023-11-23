@@ -19,7 +19,7 @@ resource "aws_vpc" "main_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name                = "main_vpc"
+    Name                = "em-thesis-ecs-cluster-vpc"
     EM_ECS_Overall_Cost = "VPC"
   }
 
@@ -59,7 +59,7 @@ resource "aws_subnet" "subnet2" {
 resource "aws_subnet" "rds_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 3)
-  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "c")
+  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
   tags = {
     Name                  = "rds_subnet"
     EM_ECS_DB_Subnet_Cost = "RDS Subnet"
@@ -68,7 +68,7 @@ resource "aws_subnet" "rds_subnet" {
 resource "aws_subnet" "rds_subnet1" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 4)
-  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
+  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
   tags = {
     Name                  = "rds_subnet1"
     EM_ECS_DB_Subnet_Cost = "RDS Subnet"
@@ -193,7 +193,7 @@ resource "aws_iam_role_policy_attachment" "ecs_agent" {
 }
 
 resource "aws_iam_instance_profile" "ecs_agent" {
-  name = "ecs-agent"
+  name = "ecs-agent-instance-profile"
   role = aws_iam_role.ecs_agent.name
 }
 #############################  ECS Autoscaling Group ######################
@@ -238,7 +238,7 @@ resource "aws_launch_template" "ecs_lt" {
 
 resource "aws_autoscaling_group" "ecs_asg" {
   vpc_zone_identifier = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
-  desired_capacity = 2
+  desired_capacity = 1
   min_size         = 1
   max_size         = 3
 
@@ -278,7 +278,7 @@ resource "aws_lb_listener" "lb_pub_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_tg_springboot.arn
+    target_group_arn = aws_lb_target_group.ecs_tg_camelcase.arn
   }
 }
 
@@ -302,7 +302,7 @@ resource "aws_lb_listener_rule" "springboot_greet_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_tg_springboot.arn
+    target_group_arn = aws_lb_target_group.ecs_tg_camelcase.arn
   }
 
   condition {
@@ -311,8 +311,8 @@ resource "aws_lb_listener_rule" "springboot_greet_rule" {
     }
   }
 }
-resource "aws_lb_target_group" "ecs_tg_springboot" {
-  name        = "ecs-tg-springboot"
+resource "aws_lb_target_group" "ecs_tg_camelcase" {
+  name        = "ecs-tg-camel-case-name"
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
@@ -521,7 +521,7 @@ resource "aws_ecs_service" "ecsCamelCaseConverer" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ecs_tg_springboot.arn
+    target_group_arn = aws_lb_target_group.ecs_tg_camelcase.arn
     container_name   = "ecsCamelCaseConverer"
     container_port   = 8080
   }

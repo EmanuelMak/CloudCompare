@@ -3,6 +3,7 @@ image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare:latest
 variables:
   PATH_TO_AWS_LAMBDA: ./apps/backend/cammelCaseLambda
   PATH_TO_SPRINGBOOT_CHECKPRIME: ./apps/backend/checkPrime_springboot
+  PATH_TO_CAMELCASE_LAMBDA: ./apps/backend/cammelCaseLambda
 stages:
   - preinit
   - init
@@ -84,6 +85,20 @@ buildAndPushToDockerhubCheckPrimeSpringboot:
     - vlt run --command="make -f makefile.ci pushToDockerhub"
   dependencies:
     - deployCamelCaseConverterMavenToRegistry
+
+
+buildAndPushToDockerHubCamelCaseLambda:
+  stage: build
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest # use the image we just built
+  services:
+    - docker:dind
+  script:
+    - cd $PATH_TO_CAMELCASE_LAMBDA
+    - vlt run --command="make dockerComposeBuild"
+    - vlt run --command="make pushToDockerhub"
+  dependencies:
+    - deployCamelCaseConverterMavenToRegistry
+
 # deploySringbootAppAwsBeanstalkEC2:
 #   stage: deploy
 #   image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/awseb:latest # use the image we just built
