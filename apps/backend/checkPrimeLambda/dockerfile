@@ -1,6 +1,19 @@
 # Use Maven with OpenJDK to build the project
 FROM --platform=linux/amd64 maven:3.8.2-openjdk-17-slim as builder
 
+
+# auth for registry
+ARG GIT_GITLAB_TOKEN
+ARG GIT_GITLAB_BASE_URL
+ARG GIT_GITLAB_CLOUDCOMPARE_ID
+
+# Convert build arguments to environment variables
+ENV GIT_GITLAB_TOKEN=$GIT_GITLAB_TOKEN
+ENV GIT_GITLAB_BASE_URL=$GIT_GITLAB_BASE_URL
+ENV GIT_GITLAB_CLOUDCOMPARE_ID=$GIT_GITLAB_CLOUDCOMPARE_ID
+
+
+
 # Copy your source code
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp

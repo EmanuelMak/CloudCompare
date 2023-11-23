@@ -33,6 +33,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   }
 }
 #############################  Subnet definition ######################
+# public subnets
 resource "aws_subnet" "subnet" {
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 1)
@@ -54,7 +55,28 @@ resource "aws_subnet" "subnet2" {
     EM_ECS_Overall_Cost = "Subnet"
   }
 }
+# Additional Private Subnets for ECS Services
+resource "aws_subnet" "private_subnet1" {
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 4)
+  availability_zone       = format("%s%s", var.AWS_DEFAULT_REGION, "a")
+  map_public_ip_on_launch = false
+  tags = {
+    Name                = "private_subnet1"
+    EM_ECS_Overall_Cost = "Private Subnet"
+  }
+}
 
+resource "aws_subnet" "private_subnet2" {
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 5)
+  availability_zone       = format("%s%s", var.AWS_DEFAULT_REGION, "b")
+  map_public_ip_on_launch = false
+  tags = {
+    Name                = "private_subnet2"
+    EM_ECS_Overall_Cost = "Private Subnet"
+  }
+}
 # Additional subnets for RDS
 resource "aws_subnet" "rds_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
@@ -74,7 +96,22 @@ resource "aws_subnet" "rds_subnet1" {
     EM_ECS_DB_Subnet_Cost = "RDS Subnet"
   }
 }
+
+#############################  NAT Gateway for Private Subnet Internet Access ######################
+resource "aws_eip" "nat" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.subnet.id  # Assuming aws_subnet.subnet is a public subnet
+  tags = {
+    Name = "nat_gateway"
+  }
+}
+
 #############################  Route table definition ######################
+# public route table
 resource "aws_route_table" "route_table" {
   vpc_id = aws_vpc.main_vpc.id
 
@@ -93,7 +130,25 @@ resource "aws_route_table_association" "route_table_association2" {
   subnet_id      = aws_subnet.subnet2.id
   route_table_id = aws_route_table.route_table.id
 }
+# private route table
+resource "aws_route_table" "private_route_table" {
+  vpc_id = aws_vpc.main_vpc.id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gateway.id
+  }
+}
+
+resource "aws_route_table_association" "private_route_table_association1" {
+  subnet_id      = aws_subnet.private_subnet1.id
+  route_table_id = aws_route_table.private_route_table.id
+}
+
+resource "aws_route_table_association" "private_route_table_association2" {
+  subnet_id      = aws_subnet.private_subnet2.id
+  route_table_id = aws_route_table.private_route_table.id
+}
 # resource "aws_route_table" "rds_route_table" {
 #   vpc_id = aws_vpc.main_vpc.id
 # }
@@ -502,7 +557,7 @@ resource "aws_ecs_service" "ecsCamelCaseConverer" {
   desired_count   = 2
 
   network_configuration {
-    subnets         = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
+    subnets         = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id]
     security_groups = [aws_security_group.ecs_sg.id]
   }
 
@@ -535,7 +590,7 @@ resource "aws_ecs_service" "prime_numbers_checker_service" {
   desired_count   = 2
 
   network_configuration {
-    subnets         = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
+    subnets         = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id]
     security_groups = [aws_security_group.ecs_sg.id]
   }
 
