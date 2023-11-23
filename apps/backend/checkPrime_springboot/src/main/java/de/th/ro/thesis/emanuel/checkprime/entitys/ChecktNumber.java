@@ -12,6 +12,9 @@ public class ChecktNumber {
 
     private boolean isPrime;
 
+    protected ChecktNumber() {
+    }
+    
     public ChecktNumber(long Number, boolean isPrime) {
         this.number = Number;
         this.isPrime = isPrime;

@@ -30,6 +30,7 @@ spec:
       containers:
       - name: checkprime
         image: {{ .Values.checkPrime.image.repository }}
+        imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.checkPrime.service.internalPort }}
         resources:
