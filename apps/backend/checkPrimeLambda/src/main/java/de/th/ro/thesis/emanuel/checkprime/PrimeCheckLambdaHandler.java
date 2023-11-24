@@ -2,56 +2,90 @@ package de.th.ro.thesis.emanuel.checkprime;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import de.th.ro.thesis.emanuel.checkprime.entitys.ChecktNumber;
-import de.th.ro.thesis.emanuel.checkprime.repositorys.ChecktNumberRepository;
-import com.th.ro.emanuel.thesis.checkprime.PrimeChecker;
-
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import com.th.ro.emanuel.thesis.checkprime.PrimeChecker;
 
 public class PrimeCheckLambdaHandler implements RequestHandler<Long, PrimeCheckResponse> {
 
-    private final ChecktNumberRepository checktNumberRepository;
-
-    // Constructor for the repository
-    public PrimeCheckLambdaHandler(ChecktNumberRepository checktNumberRepository) {
-        this.checktNumberRepository = checktNumberRepository;
-    }
-
+    private static final String DB_HOST = System.getenv("DB_HOST");
+    private static final String DB_USER = System.getenv("DB_USERNAME");
+    private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
+    private static final String DB_NAME = System.getenv("DB_NAME");
+    private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME");
     @Override
     public PrimeCheckResponse handleRequest(Long number, Context context) {
-        // Check if the number is prime and save to DB
-        boolean isPrime = checkAndSavePrime(number);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            boolean isPrime = checkAndSavePrime(number, connection);
 
-        // Get all prime numbers from DB
-        List<ChecktNumber> allPrimes = checktNumberRepository.findByIsPrime(true);
+            List<Long> allPrimes = getAllPrimes(connection);
 
-        // Create and return the response
-        return new PrimeCheckResponse(isPrime, allPrimes);
+            return new PrimeCheckResponse(isPrime, allPrimes);
+        } catch (SQLException e) {
+            System.out.println("DB_URL: " + System.getenv("DB_HOST"));
+            System.out.println("DB_USER: " + System.getenv("DB_USERNAME"));
+            System.out.println("DB_HOST: " + System.getenv("DB_HOST"));
+            throw new RuntimeException("Database connection failed", e);
+        }
     }
 
-    private boolean checkAndSavePrime(long number) {
-        Optional<ChecktNumber> checktNumberOpt = this.checktNumberRepository.findById(number);
-        if (checktNumberOpt.isPresent()) {
-            return checktNumberOpt.get().isPrime();
-        } else {
-            boolean isPrime = PrimeChecker.checkIfPrimeNumber(number);
-            this.checktNumberRepository.save(new ChecktNumber(number, isPrime));
-            return isPrime;
+    private boolean checkAndSavePrime(long number, Connection connection) throws SQLException {
+        String selectQuery = "SELECT is_prime FROM checkt_numbers WHERE number = ?";
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery)) {
+            selectStmt.setLong(1, number);
+            ResultSet rs = selectStmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBoolean("is_prime");
+            } else {
+                boolean isPrime = PrimeChecker.checkIfPrimeNumber(number);
+                String insertQuery = "INSERT INTO checkt_numbers (number, is_prime) VALUES (?, ?)";
+                try (PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
+                    insertStmt.setLong(1, number);
+                    insertStmt.setBoolean(2, isPrime);
+                    insertStmt.executeUpdate();
+                }
+                return isPrime;
+            }
         }
+    }
+
+    private List<Long> getAllPrimes(Connection connection) throws SQLException {
+        List<Long> primes = new ArrayList<>();
+        String query = "SELECT number FROM checkt_numbers WHERE is_prime = TRUE";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                primes.add(rs.getLong("number"));
+            }
+        }
+        return primes;
     }
 }
 
-// Response class
 class PrimeCheckResponse {
     private boolean isPrime;
-    private List<ChecktNumber> allPrimes;
+    private List<Long> allPrimes;
 
-    // Constructor, getters, and setters
-    // Constructor
-    public PrimeCheckResponse(boolean isPrime, List<ChecktNumber> allPrimes) {
+    public PrimeCheckResponse(boolean isPrime, List<Long> allPrimes) {
         this.isPrime = isPrime;
         this.allPrimes = allPrimes;
     }
-    protected PrimeCheckResponse() {}
+
+    // Getters and setters omitted for brevity
+    public boolean getIsPrime() {
+        return isPrime;
+    }
+    public List<Long> getAllPrimes() {
+        return allPrimes;
+    }
+    public void setIsPrime(boolean isPrime) {
+        this.isPrime = isPrime;
+    }
+    public void setAllPrimes(List<Long> allPrimes) {
+        this.allPrimes = allPrimes;
+    }
 }
