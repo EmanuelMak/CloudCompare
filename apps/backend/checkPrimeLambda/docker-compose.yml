@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  camel-case-lambda-function:
+  checkprime-lambda-function:
     build: 
       context: ./
       dockerfile: dockerfile

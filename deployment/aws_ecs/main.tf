@@ -58,7 +58,7 @@ resource "aws_subnet" "subnet2" {
 # Additional Private Subnets for ECS Services
 resource "aws_subnet" "private_subnet1" {
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 4)
+  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 3)
   availability_zone       = format("%s%s", var.AWS_DEFAULT_REGION, "a")
   map_public_ip_on_launch = false
   tags = {
@@ -69,7 +69,7 @@ resource "aws_subnet" "private_subnet1" {
 
 resource "aws_subnet" "private_subnet2" {
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 5)
+  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 4)
   availability_zone       = format("%s%s", var.AWS_DEFAULT_REGION, "b")
   map_public_ip_on_launch = false
   tags = {
@@ -80,7 +80,7 @@ resource "aws_subnet" "private_subnet2" {
 # Additional subnets for RDS
 resource "aws_subnet" "rds_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 3)
+  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 5)
   availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
   tags = {
     Name                  = "rds_subnet"
@@ -89,7 +89,7 @@ resource "aws_subnet" "rds_subnet" {
 }
 resource "aws_subnet" "rds_subnet1" {
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 4)
+  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 6)
   availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
   tags = {
     Name                  = "rds_subnet1"
@@ -295,7 +295,7 @@ resource "aws_autoscaling_group" "ecs_asg" {
   vpc_zone_identifier = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
   desired_capacity = 1
   min_size         = 1
-  max_size         = 3
+  max_size         = 8
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id
@@ -438,10 +438,10 @@ resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
 
     managed_scaling {
-      maximum_scaling_step_size = 1000
+      maximum_scaling_step_size = 2
       minimum_scaling_step_size = 1
       status                    = "ENABLED"
-      target_capacity           = 3
+      target_capacity           = 80
     }
   }
 }
@@ -467,6 +467,7 @@ resource "aws_ecs_task_definition" "task_definition_camelCaseConverer" {
   network_mode       = "awsvpc"
   execution_role_arn = aws_iam_role.ecs_agent.arn
   cpu                = 256
+  memory             = 512
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
@@ -484,7 +485,15 @@ resource "aws_ecs_task_definition" "task_definition_camelCaseConverer" {
         }
       ],
       "memory" : 512,
-      "cpu" : 256
+      "cpu" : 256,
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "ecs-primeNumbersChecker-logs",
+          "awslogs-region" : var.AWS_DEFAULT_REGION,
+          "awslogs-stream-prefix" :"camelCase"
+        }
+      }
     }
   ])
 }
@@ -517,7 +526,7 @@ resource "aws_ecs_task_definition" "prime_numbers_checker_task_def" {
       "environment" : [
         {
           "name" : "DB_HOST",
-          "value" : aws_db_instance.my_db.endpoint
+          "value" : aws_db_instance.my_db.address
         },
         {
           "name" : "DB_USERNAME",
@@ -537,7 +546,7 @@ resource "aws_ecs_task_definition" "prime_numbers_checker_task_def" {
         "options" : {
           "awslogs-group" : "ecs-primeNumbersChecker-logs",
           "awslogs-region" : var.AWS_DEFAULT_REGION,
-          "awslogs-stream-prefix" : "ecs"
+          "awslogs-stream-prefix" : "checkPrime"
         }
       }
     }
@@ -554,7 +563,7 @@ resource "aws_ecs_service" "ecsCamelCaseConverer" {
   name            = "ecsCamelCaseConverer"
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.task_definition_camelCaseConverer.arn
-  desired_count   = 2
+  desired_count   = 1
 
   network_configuration {
     subnets         = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id]
@@ -587,7 +596,7 @@ resource "aws_ecs_service" "prime_numbers_checker_service" {
   name            = "primeNumbersCheckerService"
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.prime_numbers_checker_task_def.arn
-  desired_count   = 2
+  desired_count   = 1
 
   network_configuration {
     subnets         = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id]

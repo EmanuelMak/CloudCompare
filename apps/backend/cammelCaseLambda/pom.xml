@@ -42,7 +42,7 @@
         <version>5.7.2</version>
         <scope>test</scope>
     </dependency>
-    <dependency>
+   <dependency>
 			<groupId>com.th.ro.emanuel.thesis</groupId>
 			<artifactId>camelcase-converter</artifactId>
 			<version>1.0-SNAPSHOT</version>

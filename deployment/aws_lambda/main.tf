@@ -65,9 +65,9 @@ resource "aws_db_instance" "postgres_db" {
   engine               = "postgres"
   engine_version       = "13.4"
   instance_class       = "db.t3.micro"
-  db_name                 = "mydb"
-  username             = "dbuser"
-  password             = "dbpassword"
+  db_name                = var.DB_NAME
+  username               = var.DB_USERNAME
+  password               = var.DB_PASSWORD
   parameter_group_name = "default.postgres13"
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
@@ -80,7 +80,7 @@ resource "aws_lambda_function" "camel_case_lambda" {
   role          = "arn:aws:iam::your-aws-account-id:role/lambda-role"
   
   package_type = "Image"
-  image_uri    = "emanuelmak/camel-case-lambda-function:latest"
+  image_uri    = "emanuelmak/camelcase-lambda-function:latest"
 
   # Assuming you are using the same VPC as in your previous setup
   vpc_config {
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "check_prime_lambda" {
   role          = "arn:aws:iam::your-aws-account-id:role/lambda-role"
 
   package_type = "Image"
-  image_uri    = "emanuelmak/check-prime-lambda-function:latest"
+  image_uri    = "emanuelmak/checkprime-lambda-function:latest"
 
   # Assuming you are using the same VPC as in your previous setup
   vpc_config {
@@ -106,10 +106,10 @@ resource "aws_lambda_function" "check_prime_lambda" {
   # Environment variables, assuming they are required for this function
   environment {
     variables = {
-      DB_ENDPOINT = aws_db_instance.postgres_db.address
-      DB_USER     = "dbuser"
-      DB_PASSWORD = "dbpassword"
-      DB_NAME     = "mydb"
+      DB_HOST = aws_db_instance.postgres_db.address
+      DB_USER     = var.DB_USERNAME
+      DB_PASSWORD = var.DB_PASSWORD
+      DB_NAME     = var.DB_NAME
     }
   }
 }

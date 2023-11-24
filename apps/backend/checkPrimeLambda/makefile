@@ -16,10 +16,10 @@ dockerComposeBuild:
 
 pushToDockerhub:
 	echo $$DOCKER_TOKEN | docker login -u emanuelmak --password-stdin &&\
-	docker tag camel-case-lambda-function emanuelmak/camel-case-lambda-function:latest
+	docker tag checkprimelambda-checkprime-lambda-function emanuelmak/checkprime-lambda-function:latest
 	@docker images
 	@echo "Pushing to: dockerhub" &&\
-	docker push emanuelmak/camel-case-lambda-function:latest
+	docker push emanuelmak/checkprime-lambda-function:latest
 	@echo "Image pushed successfully."
 
 .PHONY: build deploy createRole test dockerComposeBuild pushToDockerhub

@@ -12,14 +12,15 @@ ENV GIT_GITLAB_TOKEN=$GIT_GITLAB_TOKEN
 ENV GIT_GITLAB_BASE_URL=$GIT_GITLAB_BASE_URL
 ENV GIT_GITLAB_CLOUDCOMPARE_ID=$GIT_GITLAB_CLOUDCOMPARE_ID
 
-
+COPY settings.xml /root/.m2/ 
+RUN chmod 777 /root/.m2/settings.xml
 
 # Copy your source code
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 
 # Build the project
-RUN mvn clean package
+RUN mvn clean package -s /root/.m2/settings.xml
 
 # Use Amazon Corretto for the runtime image
 FROM amazoncorretto:17

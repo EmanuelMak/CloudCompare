@@ -12,14 +12,16 @@ ENV GIT_GITLAB_TOKEN=$GIT_GITLAB_TOKEN
 ENV GIT_GITLAB_BASE_URL=$GIT_GITLAB_BASE_URL
 ENV GIT_GITLAB_CLOUDCOMPARE_ID=$GIT_GITLAB_CLOUDCOMPARE_ID
 
-
+# Copying to the default maven configuration directory
+COPY settings.xml /root/.m2/ 
+RUN chmod 777 /root/.m2/settings.xml
 
 # Copy your source code
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 
 # Build the project
-RUN mvn clean package
+RUN mvn clean package -s /root/.m2/settings.xml
 
 # Use Amazon Corretto for the runtime image
 FROM amazoncorretto:17
@@ -27,7 +29,7 @@ FROM amazoncorretto:17
 WORKDIR /app
 
 # Copy the built JAR file from the builder stage
-COPY --from=builder /usr/src/myapp/target/cammelCaseLambda-1.0-SNAPSHOT.jar /app/cammelCaseLambda.jar
+COPY --from=builder /usr/src/myapp/target/checkprime-1.0-SNAPSHOT.jar /app/checkprime.jar
 
 # Command to run the application
-CMD ["java", "-jar", "/app/cammelCaseLambda.jar"]
+CMD ["java", "-jar", "/app/checkprime.jar"]

@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.th.ro.thesis.emanuel.cloudCompare</groupId>
-  <artifactId>cammelCaseLambda</artifactId>
+  <artifactId>checkprime</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>cammelCaseLambda</name>
+  <name>checkprime</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -43,8 +43,30 @@
         <scope>test</scope>
     </dependency>
     <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+      <version>3.1.4</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-data-jpa</artifactId>
+        <version>3.1.1</version>
+  		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+      <version>1.4.200</version>
+		</dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.6.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.th.ro.emanuel.thesis</groupId>
-			<artifactId>camelcase-converter</artifactId>
+			<artifactId>checkprime</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
   </dependencies>
