@@ -1,21 +1,38 @@
+# main.tf
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.45.0"
+    }
+  }
+}
+#  Provider definition
 provider "aws" {
-  region = "your-aws-region" # e.g., us-west-2
+  region     = var.AWS_DEFAULT_REGION
+  access_key = var.AWS_ACCESS_KEY_ID
+  secret_key = var.AWS_SECRET_ACCESS_KEY
 }
 
-# VPC
+# VPC Configuration
 resource "aws_vpc" "lambda_vpc" {
   cidr_block = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 }
 
-# Subnet for the Lambda Functions
-resource "aws_subnet" "lambda_subnet" {
+# Subnets Configuration
+resource "aws_subnet" "lambda_subnet_1" {
   vpc_id     = aws_vpc.lambda_vpc.id
   cidr_block = "10.0.1.0/24"
 }
 
-# Subnet for RDS
+resource "aws_subnet" "lambda_subnet_2" {
+  vpc_id            = aws_vpc.lambda_vpc.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
+}
+
 resource "aws_subnet" "rds_subnet" {
   vpc_id     = aws_vpc.lambda_vpc.id
   cidr_block = "10.0.2.0/24"
@@ -27,10 +44,11 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
   subnet_ids = [aws_subnet.rds_subnet.id]
 }
 
-# Security Group for Lambda
+# Security Groups Configuration
 resource "aws_security_group" "lambda_sg" {
   vpc_id = aws_vpc.lambda_vpc.id
-
+  // Allow all inbound and outbound traffic for simplicity
+  // Adjust as per your security requirements
   ingress {
     from_port   = 0
     to_port     = 0
@@ -46,70 +64,151 @@ resource "aws_security_group" "lambda_sg" {
   }
 }
 
-# Security Group for RDS
 resource "aws_security_group" "rds_sg" {
   vpc_id = aws_vpc.lambda_vpc.id
-
   ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
     security_groups = [aws_security_group.lambda_sg.id]
   }
 }
 
 # RDS PostgreSQL Instance
-resource "aws_db_instance" "postgres_db" {
-  allocated_storage    = 20
-  storage_type         = "gp2"
+resource "aws_db_instance" "em_thesis_lambda_db" {
+  allocated_storage    = 5
   engine               = "postgres"
-  engine_version       = "13.4"
+  engine_version       = "15.3"
   instance_class       = "db.t3.micro"
-  db_name                = var.DB_NAME
-  username               = var.DB_USERNAME
-  password               = var.DB_PASSWORD
-  parameter_group_name = "default.postgres13"
-  db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_name              = var.DB_NAME
+  username             = var.DB_USERNAME
+  password             = var.DB_PASSWORD
+  parameter_group_name = "default.postgres15"
   skip_final_snapshot  = true
+  db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
+
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
 }
 
-# Lambda Function for CamelCase - Using Docker Image
+
+
+
+# IAM Role for Lambda
+resource "aws_iam_role" "lambda_role" {
+  name = "lambda-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+# Attach the basic execution role policy to the Lambda role
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+# Lambda Functions Configuration
 resource "aws_lambda_function" "camel_case_lambda" {
   function_name = "camelCaseLambdaFunction"
-  role          = "arn:aws:iam::your-aws-account-id:role/lambda-role"
-  
-  package_type = "Image"
-  image_uri    = "emanuelmak/camelcase-lambda-function:latest"
-
-  # Assuming you are using the same VPC as in your previous setup
+  role          = aws_iam_role.lambda_role.arn
+  package_type  = "Image"
+  image_uri     = "emanuelmak/camelcase-lambda-function:latest"
   vpc_config {
-    subnet_ids         = [aws_subnet.lambda_subnet.id]
+    subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
 }
 
-# Lambda Function for CheckPrime - Using Docker Image
 resource "aws_lambda_function" "check_prime_lambda" {
   function_name = "checkPrimeLambdaFunction"
-  role          = "arn:aws:iam::your-aws-account-id:role/lambda-role"
-
-  package_type = "Image"
-  image_uri    = "emanuelmak/checkprime-lambda-function:latest"
-
-  # Assuming you are using the same VPC as in your previous setup
+  role          = aws_iam_role.lambda_role.arn
+  package_type  = "Image"
+  image_uri     = "emanuelmak/checkprime-lambda-function:latest"
   vpc_config {
-    subnet_ids         = [aws_subnet.lambda_subnet.id]
+    subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
-
-  # Environment variables, assuming they are required for this function
   environment {
     variables = {
-      DB_HOST = aws_db_instance.postgres_db.address
-      DB_USER     = var.DB_USERNAME
+      DB_HOST = aws_db_instance.em_thesis_lambda_db.address
+      DB_USER = var.DB_USERNAME
       DB_PASSWORD = var.DB_PASSWORD
-      DB_NAME     = var.DB_NAME
+      DB_NAME = var.DB_NAME
     }
   }
+}
+
+# API Gateway Configuration
+resource "aws_api_gateway_rest_api" "my_api" {
+  name        = "MyAPI"
+  description = "API Gateway for Lambda functions"
+}
+
+resource "aws_api_gateway_resource" "camel_case_resource" {
+  rest_api_id = aws_api_gateway_rest_api.my_api.id
+  parent_id   = aws_api_gateway_rest_api.my_api.root_resource_id
+  path_part   = "camelcase"
+}
+
+resource "aws_api_gateway_resource" "check_prime_resource" {
+  rest_api_id = aws_api_gateway_rest_api.my_api.id
+  parent_id   = aws_api_gateway_rest_api.my_api.root_resource_id
+  path_part   = "checkprime"
+}
+
+resource "aws_api_gateway_method" "camel_case_method" {
+  rest_api_id   = aws_api_gateway_rest_api.my_api.id
+  resource_id   = aws_api_gateway_resource.camel_case_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_method" "check_prime_method" {
+  rest_api_id   = aws_api_gateway_rest_api.my_api.id
+  resource_id   = aws_api_gateway_resource.check_prime_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "camel_case_integration" {
+  rest_api_id = aws_api_gateway_rest_api.my_api.id
+  resource_id = aws_api_gateway_resource.camel_case_resource.id
+  http_method = aws_api_gateway_method.camel_case_method.http_method
+  integration_http_method = "POST"
+  type        = "AWS_PROXY"
+  uri         = aws_lambda_function.camel_case_lambda.invoke_arn
+}
+
+resource "aws_api_gateway_integration" "check_prime_integration" {
+  rest_api_id = aws_api_gateway_rest_api.my_api.id
+  resource_id = aws_api_gateway_resource.check_prime_resource.id
+  http_method = aws_api_gateway_method.check_prime_method.http_method
+  integration_http_method = "POST"
+  type        = "AWS_PROXY"
+  uri         = aws_lambda_function.check_prime_lambda.invoke_arn
+}
+
+resource "aws_api_gateway_deployment" "api_deployment" {
+  depends_on = [
+    aws_api_gateway_integration.camel_case_integration,
+    aws_api_gateway_integration.check_prime_integration
+  ]
+  rest_api_id = aws_api_gateway_rest_api.my_api.id
+  stage_name  = "prod"
+}
+
+output "api_gateway_endpoint" {
+  value = aws_api_gateway_deployment.api_deployment.invoke_url
+}
+output "db_port" {
+  value = aws_db_instance.em_thesis_lambda_db.address
 }

@@ -16,7 +16,7 @@ dockerComposeBuild:
 
 pushToDockerhub:
 	echo $$DOCKER_TOKEN | docker login -u emanuelmak --password-stdin &&\
-	docker tag cammelcaselambda-camel-case-lambda-function emanuelmak/camelcase-lambda-function:latest
+	docker tag cammelcaselambda-camelcase-lambda-function emanuelmak/camelcase-lambda-function:latest
 	@docker images
 	@echo "Pushing to: dockerhub" &&\
 	docker push emanuelmak/camelcase-lambda-function:latest

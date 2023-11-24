@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  case-lambda-function:
+  camelcase-lambda-function:
     build: 
       context: ./
       dockerfile: dockerfile
