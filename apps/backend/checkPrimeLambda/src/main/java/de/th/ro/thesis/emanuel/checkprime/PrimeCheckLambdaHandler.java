@@ -1,3 +1,5 @@
+package de.th.ro.thesis.emanuel.checkprime;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import de.th.ro.thesis.emanuel.checkprime.entitys.ChecktNumber;
