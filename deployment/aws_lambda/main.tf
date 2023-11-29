@@ -16,7 +16,7 @@ provider "aws" {
 
 # VPC Configuration
 resource "aws_vpc" "lambda_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 }
@@ -139,10 +139,10 @@ resource "aws_lambda_function" "check_prime_lambda" {
   }
   environment {
     variables = {
-      DB_HOST = aws_db_instance.em_thesis_lambda_db.address
-      DB_USER = var.DB_USERNAME
+      DB_HOST     = aws_db_instance.em_thesis_lambda_db.address
+      DB_USER     = var.DB_USERNAME
       DB_PASSWORD = var.DB_PASSWORD
-      DB_NAME = var.DB_NAME
+      DB_NAME     = var.DB_NAME
     }
   }
 }
@@ -180,21 +180,21 @@ resource "aws_api_gateway_method" "check_prime_method" {
 }
 
 resource "aws_api_gateway_integration" "camel_case_integration" {
-  rest_api_id = aws_api_gateway_rest_api.my_api.id
-  resource_id = aws_api_gateway_resource.camel_case_resource.id
-  http_method = aws_api_gateway_method.camel_case_method.http_method
+  rest_api_id             = aws_api_gateway_rest_api.my_api.id
+  resource_id             = aws_api_gateway_resource.camel_case_resource.id
+  http_method             = aws_api_gateway_method.camel_case_method.http_method
   integration_http_method = "POST"
-  type        = "AWS_PROXY"
-  uri         = aws_lambda_function.camel_case_lambda.invoke_arn
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.camel_case_lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "check_prime_integration" {
-  rest_api_id = aws_api_gateway_rest_api.my_api.id
-  resource_id = aws_api_gateway_resource.check_prime_resource.id
-  http_method = aws_api_gateway_method.check_prime_method.http_method
+  rest_api_id             = aws_api_gateway_rest_api.my_api.id
+  resource_id             = aws_api_gateway_resource.check_prime_resource.id
+  http_method             = aws_api_gateway_method.check_prime_method.http_method
   integration_http_method = "POST"
-  type        = "AWS_PROXY"
-  uri         = aws_lambda_function.check_prime_lambda.invoke_arn
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.check_prime_lambda.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "api_deployment" {
@@ -205,6 +205,46 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.my_api.id
   stage_name  = "prod"
 }
+
+
+
+
+# lambda function to create table on db on creation
+# Lambda function to run the setup script
+resource "aws_lambda_function" "db_setup_lambda" {
+  function_name    = "dbSetupFunction"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "lambda_function.lambda_handler"
+  runtime          = "python3.8"
+  filename         = "./createTableOnRdsLambda.zip"
+  source_code_hash = filebase64sha256("./createTableOnRdsLambda.zip")
+  vpc_config {
+    subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]
+  }
+  environment {
+    variables = {
+      DB_HOST     = aws_db_instance.em_thesis_lambda_db.address
+      DB_USERNAME = var.DB_USERNAME
+      DB_PASSWORD = var.DB_PASSWORD
+      DB_NAME     = var.DB_NAME
+    }
+  }
+}
+
+# Trigger Lambda function after RDS creation
+resource "null_resource" "db_setup_trigger" {
+  depends_on = [aws_db_instance.em_thesis_lambda_db, aws_lambda_function.db_setup_lambda]
+
+  provisioner "local-exec" {
+    command = "aws lambda invoke --function-name ${aws_lambda_function.db_setup_lambda.function_name} response.json"
+  }
+}
+
+
+
+
+
 
 output "api_gateway_endpoint" {
   value = aws_api_gateway_deployment.api_deployment.invoke_url

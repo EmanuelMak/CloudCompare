@@ -21,5 +21,16 @@ pushToDockerhub:
 	@echo "Pushing to: dockerhub" &&\
 	docker push emanuelmak/checkprime-lambda-function:latest
 	@echo "Image pushed successfully."
+pushToDockerhubCreateTableLambda:
+	echo $$DOCKER_TOKEN | docker login -u emanuelmak --password-stdin &&\
+	docker tag create-table-lambda emanuelmak/create-table-lambda:latest
+	@docker images
+	@echo "Pushing to: dockerhub" &&\
+	docker push emanuelmak/create-table-lambda:latest
+	@echo "Image pushed successfully."
+
+testFunctionLocally:
+	@echo "Testing function locally..." &&\
+	curl -XPOST "http://localhost:8080/2015-03-31/functions/function/invocations" -d '7'
 
 .PHONY: build deploy createRole test dockerComposeBuild pushToDockerhub

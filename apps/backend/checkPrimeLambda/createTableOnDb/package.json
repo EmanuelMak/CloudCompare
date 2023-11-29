@@ -1,0 +1,17 @@
+{
+    "name": "create-table-lambda",
+    "version": "1.0.0",
+    "scripts": {
+      "build": "tsc"
+    },
+    "dependencies": {
+        "aws-sdk": "^2.1034.0",
+        "pg": "^8.7.1"
+    },
+    "devDependencies": {
+      "typescript": "^4.6.3",
+      "@types/node": "^16.11.17",
+      "@types/pg": "^8.6.7"
+    }
+  }
+  

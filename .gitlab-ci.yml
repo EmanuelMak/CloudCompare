@@ -111,6 +111,7 @@ buildAndPushToDockerHubCheckPrimeLambda:
     - vlt run --command="make dockerComposeBuild"
     - docker images 
     - vlt run --command="make pushToDockerhub"
+    - vlt run --command="make pushToDockerhubCreateTableLambda"
   dependencies:
     - deployCamelCaseConverterMavenToRegistry
 

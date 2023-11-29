@@ -33,5 +33,18 @@ services:
       volumes:
         - postgres_data:/var/lib/postgresql/data
 
+  create-table-lambda:
+    build:
+      context: ./createTableOnDb
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    depends_on:
+      - db
+
+
 volumes:
   postgres_data:
