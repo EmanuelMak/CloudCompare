@@ -1,5 +1,5 @@
 # Stage 1: Build the TypeScript Lambda function
-FROM node:14 as builder
+FROM --platform=linux/amd64 node:14 as builder
 
 WORKDIR /usr/src/app
 
