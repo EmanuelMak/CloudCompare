@@ -1,5 +1,5 @@
 # Stage 1: Build the application with Maven
-FROM maven:3.8.2-openjdk-17-slim as builder
+FROM --platform=linux/amd64 maven:3.8.2-openjdk-17-slim as builder
 
 
 # auth for registry
@@ -25,7 +25,7 @@ COPY ./src ./src
 #RUN mvn clean package -Dmaven.test.skip=true -s /root/.m2/settings.xml
 RUN mvn compile dependency:copy-dependencies -DincludeScope=runtime -s /root/.m2/settings.xml
 # Stage 2: Setup the runtime environment
-FROM public.ecr.aws/lambda/java:17
+FROM  --platform=linux/amd64 public.ecr.aws/lambda/java:17
 
 # Copy function code and runtime dependencies from Maven layout
 COPY --from=builder target/classes ${LAMBDA_TASK_ROOT}

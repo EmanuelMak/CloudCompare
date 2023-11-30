@@ -7,55 +7,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>cammelCaseLambda</name>
   <url>http://maven.apache.org</url>
-  <properties>
+ <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.shade.plugin.version>3.2.1</maven.shade.plugin.version>
-    <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
-    <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-    <aws.java.sdk.version>2.21.26</aws.java.sdk.version>
-    <aws.lambda.java.version>1.2.3</aws.lambda.java.version>
-    <junit5.version>5.8.1</junit5.version>
   </properties>
-  <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>bom</artifactId>
-                <version>${aws.java.sdk.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
   <dependencies>
-<dependency>
-        <groupId>software.amazon.awssdk</groupId>
-        <artifactId>s3</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>netty-nio-client</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>apache-client</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-
-    <dependency>
-        <groupId>software.amazon.awssdk</groupId>
-        <artifactId>url-connection-client</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>aws-lambda-java-core</artifactId>
-        <version>${aws.lambda.java.version}</version>
-    </dependency>
-    <!-- AWS Lambda Java Core -->
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-lambda-java-core</artifactId>
@@ -82,11 +39,16 @@
         <version>5.7.2</version>
         <scope>test</scope>
     </dependency>
-   <dependency>
-			<groupId>com.th.ro.emanuel.thesis</groupId>
-			<artifactId>camelcase-converter</artifactId>
-			<version>1.0-SNAPSHOT</version>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.6.0</version>
 		</dependency>
+    <dependency>
+        <groupId>com.th.ro.emanuel.thesis</groupId>
+        <artifactId>camelcase-converter</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
   </dependencies>
   <repositories>
 		<repository>
@@ -107,6 +69,13 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+                <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>de.th.ro.thesis.emanuel.cloudCompare.MyLambdaHandler</mainClass>
+                    </transformer>
+                </transformers>
+            </configuration>
           </execution>
         </executions>
       </plugin>

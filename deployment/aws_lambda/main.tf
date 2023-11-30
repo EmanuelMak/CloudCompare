@@ -213,11 +213,9 @@ resource "aws_api_gateway_deployment" "api_deployment" {
 # Lambda function to run the setup script
 resource "aws_lambda_function" "db_setup_lambda" {
   function_name    = "dbSetupFunction"
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "lambda_function.lambda_handler"
-  runtime          = "python3.8"
-  filename         = "./createTableOnRdsLambda.zip"
-  source_code_hash = filebase64sha256("./createTableOnRdsLambda.zip")
+  role          = aws_iam_role.lambda_role.arn
+  package_type  = "Image"
+  image_uri     = "emanuelmak/create-table-lambda:latest"
   vpc_config {
     subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]

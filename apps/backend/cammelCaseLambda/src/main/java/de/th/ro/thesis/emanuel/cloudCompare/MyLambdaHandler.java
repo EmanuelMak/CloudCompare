@@ -1,7 +1,7 @@
 package de.th.ro.thesis.emanuel.cloudCompare;
 
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.th.ro.emanuel.thesis.camelcase.CamelCaseConverter;
 
 /**
