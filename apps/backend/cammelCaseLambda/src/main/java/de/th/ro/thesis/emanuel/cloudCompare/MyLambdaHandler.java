@@ -14,10 +14,10 @@ public class MyLambdaHandler implements RequestHandler<Map<String, Object>, Stri
     @Override
     public String handleRequest(Map<String, Object> event, Context context) {
         Map<String, String> queryParams = (Map<String, String>) event.get("queryStringParameters");
-        if (queryParams == null || !queryParams.containsKey("input")) {
-            return "Input parameter is required";
+        if (queryParams == null || !queryParams.containsKey("text")) {
+            return "Input parameter text is required";
         }
-        String input = queryParams.get("input");
+        String input = queryParams.get("text");
         return convertCammelCase(input);
     }
 
