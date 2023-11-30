@@ -1,4 +1,5 @@
-.PHONY: createTableOnRds createTableOnRdsLocal
+.PHONY: createTableOnRds createTableOnRdsLocal testCamelCase
+
 
 createTableOnRds:
 	@echo "Packing Python script with its dependencies..."
@@ -26,3 +27,23 @@ pushLambdaImagesToEcr:
 	cd ./ecr &&\
 	chmod +x ./pushImagesToAwsEcr.sh &&\
 	./pushImagesToAwsEcr.sh
+
+destroyLambdaFunctionsOnly:
+	terraform destroy -target=aws_lambda_function.camel_case_lambda -target=aws_lambda_function.check_prime_lambda -target=aws_lambda_function.db_setup_lambda
+
+testCamelCase:
+	echo '{"queryStringParameters": {"text": "my text"}}' > payload.json &&\
+	aws lambda invoke \
+		--function-name "camelCaseLambdaFunction" \
+		--payload fileb://payload.json \
+		--log-type Tail outputfile.txt &&\
+	cat outputfile.txt | jq -r '.LogResult' | base64 --decode &&\
+	rm outputfile.txt payload.json
+testCamelCase1:
+	echo '{"queryStringParameters": {"text": "my text"}}' > payload.json &&\
+	aws lambda invoke \
+		--function-name "camelCaseLambdaFunction" \
+		--payload fileb://payload.json \
+		--log-type Tail outputfile.txt
+	cat outputfile.txt
+	rm payload.json

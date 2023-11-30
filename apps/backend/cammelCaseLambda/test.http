@@ -1,0 +1,24 @@
+###
+POST http://localhost:8080/2015-03-31/functions/function/invocations
+Content-Type: application/json
+
+{
+  "queryStringParameters": {
+        "text": "test"
+    }
+}
+
+
+
+###
+POST http://localhost:8080/2015-03-31/functions/function/invocations
+Content-Type: application/json
+
+{
+    "queryStringParameters": {
+        
+    }
+}
+
+###
+GET http://localhost:8080/2015-03-31/functions/function/invocations?number=23

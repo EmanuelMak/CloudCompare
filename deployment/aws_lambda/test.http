@@ -1,0 +1,12 @@
+# Set your API Gateway base URL
+@baseUrl=https://ner8txfez7.execute-api.eu-central-1.amazonaws.com/prod
+
+###
+# Test the camelcase Lambda function
+# Replace 'yourText' with the text you want to convert to camelCase
+GET {{baseUrl}}/camelcase?text=yourText
+
+###
+# Test the checkprime Lambda function
+# Replace 'yourNumber' with the number you want to check for primality
+GET {{baseUrl}}/checkprime?number=yourNumber
