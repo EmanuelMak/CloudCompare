@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Setup the runtime environment
-FROM public.ecr.aws/lambda/nodejs:14
+FROM --platform=linux/amd64 public.ecr.aws/lambda/nodejs:14
 
 # Copy function code and runtime dependencies from builder
 COPY --from=builder /usr/src/app/dist ${LAMBDA_TASK_ROOT}

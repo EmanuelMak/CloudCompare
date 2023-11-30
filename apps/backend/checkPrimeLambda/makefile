@@ -23,7 +23,7 @@ pushToDockerhub:
 	@echo "Image pushed successfully."
 pushToDockerhubCreateTableLambda:
 	echo $$DOCKER_TOKEN | docker login -u emanuelmak --password-stdin &&\
-	docker tag create-table-lambda emanuelmak/create-table-lambda:latest
+	docker tag checkprimelambda-create-table-lambda  emanuelmak/create-table-lambda:latest
 	@docker images
 	@echo "Pushing to: dockerhub" &&\
 	docker push emanuelmak/create-table-lambda:latest
