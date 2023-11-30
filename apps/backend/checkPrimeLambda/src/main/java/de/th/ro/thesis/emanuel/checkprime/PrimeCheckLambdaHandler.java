@@ -15,7 +15,7 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Map<String, Objec
     private static final String DB_USER = System.getenv("DB_USERNAME");
     private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
     private static final String DB_NAME = System.getenv("DB_NAME");
-    private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME");
+    private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME") + "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory";
     @Override
     public PrimeCheckResponse handleRequest(Map<String, Object> event, Context context) {
         System.out.println("Received event: " + event);

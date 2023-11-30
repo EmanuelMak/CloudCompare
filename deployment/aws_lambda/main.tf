@@ -77,6 +77,12 @@ resource "aws_security_group" "rds_sg" {
     protocol        = "tcp"
     security_groups = [aws_security_group.lambda_sg.id]
   }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 # RDS PostgreSQL Instance
@@ -88,7 +94,7 @@ resource "aws_db_instance" "em_thesis_lambda_db" {
   db_name              = var.DB_NAME
   username             = var.DB_USERNAME
   password             = var.DB_PASSWORD
-  parameter_group_name = "default.postgres15"
+  parameter_group_name = "postgres15"
   skip_final_snapshot  = true
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
 
