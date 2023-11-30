@@ -18,6 +18,7 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Map<String, Objec
     private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME");
     @Override
     public PrimeCheckResponse handleRequest(Map<String, Object> event, Context context) {
+        System.out.println("Received event: " + event);
         Map<String, String> queryStringParameters = (Map<String, String>) event.get("queryStringParameters");
         if (queryStringParameters == null || !queryStringParameters.containsKey("number")) {
             return new PrimeCheckResponse("Parameter 'number' is required.");

@@ -13,7 +13,7 @@ import com.th.ro.emanuel.thesis.camelcase.CamelCaseConverter;
 public class MyLambdaHandler implements RequestHandler<Map<String, Object>, String> {
     @Override
     public String handleRequest(Map<String, Object> event, Context context) {
-        context.getLogger().log("Received event: " + event);
+        System.out.println("Received event: " + event);
         Map<String, String> queryParams = (Map<String, String>) event.get("queryStringParameters");
         if (queryParams == null || !queryParams.containsKey("text")) {
             return "Input parameter text is required";

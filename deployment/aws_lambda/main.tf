@@ -147,6 +147,31 @@ resource "aws_iam_role_policy_attachment" "lambda_ecr_read_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_ecr_read_policy.arn
 }
+#lambda function loggin policy
+resource "aws_iam_policy" "lambda_logging_policy" {
+  name        = "LambdaLoggingPolicy"
+  description = "IAM policy for Lambda logging to CloudWatch"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:*:*:*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logging_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
+}
 
 # Lambda Functions Configuration
 resource "aws_lambda_function" "camel_case_lambda" {
