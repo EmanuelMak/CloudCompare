@@ -1,5 +1,7 @@
 package de.th.ro.thesis.emanuel.cloudCompare;
 
+import java.util.Map;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.th.ro.emanuel.thesis.camelcase.CamelCaseConverter;
@@ -8,9 +10,14 @@ import com.th.ro.emanuel.thesis.camelcase.CamelCaseConverter;
  * Hello world!
  *
  */
-public class MyLambdaHandler implements RequestHandler<String, String> {
+public class MyLambdaHandler implements RequestHandler<Map<String, Object>, String> {
     @Override
-    public String handleRequest(String input, Context context) {
+    public String handleRequest(Map<String, Object> event, Context context) {
+        Map<String, String> queryParams = (Map<String, String>) event.get("queryStringParameters");
+        if (queryParams == null || !queryParams.containsKey("input")) {
+            return "Input parameter is required";
+        }
+        String input = queryParams.get("input");
         return convertCammelCase(input);
     }
 

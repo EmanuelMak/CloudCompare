@@ -5,10 +5,11 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.th.ro.emanuel.thesis.checkprime.PrimeChecker;
 
-public class PrimeCheckLambdaHandler implements RequestHandler<Long, PrimeCheckResponse> {
+public class PrimeCheckLambdaHandler implements RequestHandler<Map<String,Object>, PrimeCheckResponse> {
 
     private static final String DB_HOST = System.getenv("DB_HOST");
     private static final String DB_USER = System.getenv("DB_USERNAME");
@@ -16,7 +17,14 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Long, PrimeCheckR
     private static final String DB_NAME = System.getenv("DB_NAME");
     private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME");
     @Override
-    public PrimeCheckResponse handleRequest(Long number, Context context) {
+    public PrimeCheckResponse handleRequest(Map<String,Object> event, Context context) {
+        Map<String, String> queryParams = (Map<String, String>) event.get("queryStringParameters");
+        if (queryParams == null || !queryParams.containsKey("number")) {
+            // Return a response indicating the missing parameter
+            return new PrimeCheckResponse(false, "Number parameter is required");
+        }
+
+        Long number = Long.parseLong(queryParams.get("number"));
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             boolean isPrime = checkAndSavePrime(number, connection);
 

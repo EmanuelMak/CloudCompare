@@ -121,23 +121,76 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+
+#polocies for lambda functions to access ecr repos
+resource "aws_iam_policy" "lambda_ecr_read_policy" {
+  name        = "lambdaECRReadPolicy"
+  description = "Policy for Lambda functions to access ECR"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Action    = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability"
+        ],
+        Resource  = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_ecr_read_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_ecr_read_policy.arn
+}
+
 # Lambda Functions Configuration
 resource "aws_lambda_function" "camel_case_lambda" {
   function_name = "camelCaseLambdaFunction"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = "emanuelmak/camelcase-lambda-function:latest"
+  image_uri     = "${var.AWS_ID}.dkr.ecr.${var.AWS_CLI_REGION}.amazonaws.com/camelcase-lambda-function:latest"
   vpc_config {
     subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
 }
 
+resource "aws_iam_policy" "lambda_vpc_access_policy" {
+  name        = "lambdaVPCAccessPolicy"
+  description = "Policy for Lambda functions to access VPC resources"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Action    = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface"
+        ],
+        Resource  = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_vpc_access_policy.arn
+}
+
+
 resource "aws_lambda_function" "check_prime_lambda" {
   function_name = "checkPrimeLambdaFunction"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = "emanuelmak/checkprime-lambda-function:latest"
+  image_uri     = "${var.AWS_ID}.dkr.ecr.${var.AWS_CLI_REGION}.amazonaws.com/checkprime-lambda-function:latest"
   vpc_config {
     subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
@@ -220,7 +273,7 @@ resource "aws_lambda_function" "db_setup_lambda" {
   function_name    = "dbSetupFunction"
   role          = aws_iam_role.lambda_role.arn
   package_type  = "Image"
-  image_uri     = "emanuelmak/create-table-lambda:latest"
+  image_uri     = "${var.AWS_ID}.dkr.ecr.${var.AWS_CLI_REGION}.amazonaws.com/create-table-lambda:latest"
   vpc_config {
     subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
