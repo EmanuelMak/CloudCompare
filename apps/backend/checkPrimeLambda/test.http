@@ -1,0 +1,13 @@
+##
+POST http://localhost:8081/2015-03-31/functions/function/invocations
+Content-Type: application/json
+
+{
+  "queryStringParameters": {
+        "number": "23"
+    }
+}
+
+##
+
+POST http://localhost:8081/2015-03-31/functions/function/invocations?number=23

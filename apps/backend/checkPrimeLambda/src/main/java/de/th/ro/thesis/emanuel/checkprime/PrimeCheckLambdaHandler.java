@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.th.ro.emanuel.thesis.checkprime.PrimeChecker;
 
-public class PrimeCheckLambdaHandler implements RequestHandler<Map<String,Object>, PrimeCheckResponse> {
+public class PrimeCheckLambdaHandler implements RequestHandler<Map<String, Object>, PrimeCheckResponse> {
 
     private static final String DB_HOST = System.getenv("DB_HOST");
     private static final String DB_USER = System.getenv("DB_USERNAME");
@@ -17,14 +17,21 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Map<String,Object
     private static final String DB_NAME = System.getenv("DB_NAME");
     private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME");
     @Override
-    public PrimeCheckResponse handleRequest(Map<String,Object> event, Context context) {
-        Map<String, String> queryParams = (Map<String, String>) event.get("queryStringParameters");
-        if (queryParams == null || !queryParams.containsKey("number")) {
-            // Return a response indicating the missing parameter
-            return new PrimeCheckResponse(false, "Number parameter is required");
+    public PrimeCheckResponse handleRequest(Map<String, Object> event, Context context) {
+        Map<String, String> queryStringParameters = (Map<String, String>) event.get("queryStringParameters");
+        if (queryStringParameters == null || !queryStringParameters.containsKey("number")) {
+            return new PrimeCheckResponse("Parameter 'number' is required.");
         }
 
-        Long number = Long.parseLong(queryParams.get("number"));
+        String numberStr = queryStringParameters.get("number");
+        long parsedValue = 0;
+        try {
+            parsedValue = Long.parseLong(numberStr);
+        } catch (NumberFormatException e) {
+            return new PrimeCheckResponse( "Invalid format for number. Must be a number.");
+        }
+
+        Long number = parsedValue;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             boolean isPrime = checkAndSavePrime(number, connection);
 
@@ -77,13 +84,18 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Map<String,Object
 class PrimeCheckResponse {
     private boolean isPrime;
     private List<Long> allPrimes;
+    private String message;
 
     public PrimeCheckResponse(boolean isPrime, List<Long> allPrimes) {
         this.isPrime = isPrime;
         this.allPrimes = allPrimes;
     }
 
-    // Getters and setters omitted for brevity
+    public PrimeCheckResponse(String message) {
+        this.message = message;
+    }
+
+
     public boolean getIsPrime() {
         return isPrime;
     }
