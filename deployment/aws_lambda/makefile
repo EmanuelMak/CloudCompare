@@ -22,5 +22,7 @@ createTableOnRdsLocal:
 	@echo "Python script executed to create table in local setup."
 
 
-checkPythonZip:
-	 unzip -l createTableOnRdsLambda.zip
+pushLambdaImagesToEcr:
+	cd ./ecr &&\
+	chmod +x ./pushImagesToAwsEcr.sh &&\
+	./pushImagesToAwsEcr.sh
