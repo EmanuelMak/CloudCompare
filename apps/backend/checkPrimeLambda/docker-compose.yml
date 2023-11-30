@@ -37,13 +37,13 @@ services:
     build:
       context: ./createTableOnDb
       dockerfile: Dockerfile
+    ports:
+      - "9000:8080"
     environment:
       DB_HOST: db
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-    ports:
-      - "3000:8080" 
     depends_on:
       - db
 

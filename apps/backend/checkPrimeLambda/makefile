@@ -32,5 +32,8 @@ pushToDockerhubCreateTableLambda:
 testFunctionLocally:
 	@echo "Testing function locally..." &&\
 	curl -XPOST "http://localhost:8080/2015-03-31/functions/function/invocations" -d '7'
+createTableOnDbLocally:
+	@echo "creating Table on Db ..." &&\
+	curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
 
 .PHONY: build deploy createRole test dockerComposeBuild pushToDockerhub

@@ -1,17 +1,18 @@
 {
-    "name": "create-table-lambda",
-    "version": "1.0.0",
-    "scripts": {
-      "build": "tsc"
-    },
-    "dependencies": {
-        "aws-sdk": "^2.1034.0",
-        "pg": "^8.7.1"
-    },
-    "devDependencies": {
-      "typescript": "^4.6.3",
-      "@types/node": "^16.11.17",
-      "@types/pg": "^8.6.7"
-    }
+  "name": "createtableondb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.129",
+    "esbuild": "^0.19.8"
+  },
+  "dependencies": {
+    "pg": "^8.7.1"
   }
-  
+}
