@@ -15,9 +15,11 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
         database: process.env.DB_NAME,
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
-        port: parseInt(process.env.DB_PORT || '5432'),
+        port: 5432,
         ssl: ssl,
       });
+      console.log('Client created:');
+      console.log(client);
     
       try {
         await client.connect();

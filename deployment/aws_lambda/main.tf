@@ -25,6 +25,7 @@ resource "aws_vpc" "lambda_vpc" {
 resource "aws_subnet" "lambda_subnet_1" {
   vpc_id     = aws_vpc.lambda_vpc.id
   cidr_block = "10.0.1.0/24"
+  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
 }
 
 resource "aws_subnet" "lambda_subnet_2" {
@@ -33,20 +34,10 @@ resource "aws_subnet" "lambda_subnet_2" {
   availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
 }
 
-resource "aws_subnet" "rds_subnet" {
-  vpc_id     = aws_vpc.lambda_vpc.id
-  cidr_block = "10.0.2.0/24"
-  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
-}
-resource "aws_subnet" "rds_subnet1" {
-  vpc_id     = aws_vpc.lambda_vpc.id
-  cidr_block = "10.0.4.0/24"
-  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
-}
 # RDS Subnet Group
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "my-rds-subnet-group"
-  subnet_ids = [aws_subnet.rds_subnet.id, aws_subnet.rds_subnet1.id]
+  subnet_ids = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
 }
 
 # Security Groups Configuration
@@ -76,6 +67,7 @@ resource "aws_security_group" "rds_sg" {
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.lambda_sg.id]
+    #cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port   = 0
@@ -94,11 +86,12 @@ resource "aws_db_instance" "em_thesis_lambda_db" {
   db_name              = var.DB_NAME
   username             = var.DB_USERNAME
   password             = var.DB_PASSWORD
-  parameter_group_name = "postgres15"
+  parameter_group_name = "default.postgres15"
   skip_final_snapshot  = true
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  #publicly_accessible = true
 }
 
 
