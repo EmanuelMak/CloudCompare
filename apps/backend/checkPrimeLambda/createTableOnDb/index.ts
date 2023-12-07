@@ -10,46 +10,60 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
     console.log(`DB User: ${process.env.DB_USERNAME}`);
     const pathToCert = './rds-combined-ca-bundle.pem';
     const ssl = {
-      rejectUnauthorized: false, // Set to true for production
-      ca: readFileSync(pathToCert).toString(),
+        rejectUnauthorized: false, // Set to true for production
+        ca: readFileSync(pathToCert).toString(),
     };
-      console.log(`PostgreSQL Client Configuration:`, {
+
+    const client = new Client({
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         user: process.env.DB_USERNAME,
-        port: 5432,
-      });
-      console.log('Client created:');
-      console.log(client);
-    
-      try {
+        password: process.env.DB_PASSWORD,
+        port: parseInt(process.env.DB_PORT || '5432'),
+        ssl: ssl,
+    });
+
+    try {
         await client.connect();
-    
         const createTableQuery = `
-          CREATE TABLE IF NOT EXISTS checkt_numbers (
-            number BIGINT PRIMARY KEY,
-            is_prime BOOLEAN NOT NULL
-          );
+            CREATE TABLE IF NOT EXISTS checkt_numbers (
+              number BIGINT PRIMARY KEY,
+              is_prime BOOLEAN NOT NULL
+            );
         `;
-    
         await client.query(createTableQuery);
+
+        // Insert some prime numbers
+        const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+        for (let prime of primes) {
+            const insertQuery = 'INSERT INTO checkt_numbers (number, is_prime) VALUES ($1, $2) ON CONFLICT (number) DO NOTHING;';
+            await client.query(insertQuery, [prime, true]);
+        }
+
+        // Retrieve all entries
+        const selectQuery = 'SELECT * FROM checkt_numbers;';
+        const res = await client.query(selectQuery);
+        
         await client.end();
-    
+
         return {
-          statusCode: 200,
-          body: JSON.stringify({
-            message: 'Table created successfully',
-        }),
+            statusCode: 200,
+            body: JSON.stringify({
+                message: 'Table created and data inserted successfully',
+                data: res.rows,
+            }),
         };
-      } catch (error) {
-        console.error('Error creating table:', JSON.stringify(error, null, 2), error.stack);
+    } catch (error) {
+        console.error('Error:', JSON.stringify(error, null, 2), error.stack);
         return {
-          statusCode: 500,
-          body: JSON.stringify({
-            message: 'Failed to create table',
-        }),
+            statusCode: 500,
+            body: JSON.stringify({
+                message: 'Failed to create table or insert data',
+            }),
         };
-      } finally {
-        await client.end();
-      }
+    } finally {
+        if (client) {
+            await client.end();
+        }
+    }
 };
