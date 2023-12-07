@@ -252,6 +252,9 @@ resource "aws_api_gateway_method" "camel_case_method" {
   resource_id   = aws_api_gateway_resource.camel_case_resource.id
   http_method   = "GET"
   authorization = "NONE"
+  request_parameters = {
+    "method.request.querystring.text" = true
+  }
 }
 
 resource "aws_api_gateway_method" "check_prime_method" {
@@ -259,6 +262,9 @@ resource "aws_api_gateway_method" "check_prime_method" {
   resource_id   = aws_api_gateway_resource.check_prime_resource.id
   http_method   = "GET"
   authorization = "NONE"
+  request_parameters = {
+    "method.request.querystring.number" = true
+  }
 }
 
 resource "aws_api_gateway_integration" "camel_case_integration" {
@@ -268,6 +274,10 @@ resource "aws_api_gateway_integration" "camel_case_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.camel_case_lambda.invoke_arn
+  credentials             = aws_iam_role.api_gateway_lambda_invoke_role.arn
+  request_parameters      = {
+    "integration.request.querystring.text" = "method.request.querystring.text"
+  }
 }
 
 resource "aws_api_gateway_integration" "check_prime_integration" {
@@ -277,6 +287,10 @@ resource "aws_api_gateway_integration" "check_prime_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.check_prime_lambda.invoke_arn
+  credentials             = aws_iam_role.api_gateway_lambda_invoke_role.arn
+  request_parameters      = {
+    "integration.request.querystring.number" = "method.request.querystring.number"
+  }
 }
 
 resource "aws_api_gateway_deployment" "api_deployment" {
@@ -288,7 +302,112 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   stage_name  = "prod"
 }
 
+resource "aws_api_gateway_stage" "lambdagateway" {
+  deployment_id = aws_api_gateway_deployment.api_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.my_api.id
+  stage_name    = "prod"
 
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
+    format = "{\"requestId\":\"$context.requestId\", \"ip\":\"$context.identity.sourceIp\", \"caller\":\"$context.identity.caller\", \"user\":\"$context.identity.user\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\", \"resourcePath\":\"$context.resourcePath\", \"status\":\"$context.status\", \"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\"}"
+
+  }
+}
+
+resource "aws_cloudwatch_log_group" "api_gateway_logs" {
+  name = "/aws/api_gateway/my_api_logs"
+}
+
+
+#api gateway iam permissions
+resource "aws_iam_role" "api_gateway_lambda_invoke_role" {
+  name = "api-gateway-lambda-invoke-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "apigateway.amazonaws.com"
+        },
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy" "api_gateway_lambda_invoke_policy" {
+  name = "api-gateway-lambda-invoke-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "lambda:InvokeFunction"
+        ],
+        Effect = "Allow",
+        Resource = [
+          aws_lambda_function.camel_case_lambda.arn,
+          aws_lambda_function.check_prime_lambda.arn
+        ]
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "api_gateway_lambda_invoke_attachment" {
+  role       = aws_iam_role.api_gateway_lambda_invoke_role.name
+  policy_arn = aws_iam_policy.api_gateway_lambda_invoke_policy.arn
+}
+
+#api gateway cloud watch logging arn
+resource "aws_api_gateway_account" "gateway_account" {
+  cloudwatch_role_arn = aws_iam_role.api_gateway_cloudwatch.arn
+  depends_on = [aws_iam_role_policy.api_gateway_cloudwatch_policy]  
+}
+
+resource "aws_iam_role" "api_gateway_cloudwatch" {
+  name = "api-gateway-cloudwatch-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "apigateway.amazonaws.com"
+        },
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "api_gateway_cloudwatch_policy" {
+  name = "api-gateway-cloudwatch-policy"
+  role = aws_iam_role.api_gateway_cloudwatch.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
+          "logs:GetLogEvents",
+          "logs:FilterLogEvents"
+        ],
+        Effect = "Allow",
+        Resource = "arn:aws:logs:*:*:*"
+      },
+    ]
+  })
+}
 
 
 # lambda function to create table on db on creation
