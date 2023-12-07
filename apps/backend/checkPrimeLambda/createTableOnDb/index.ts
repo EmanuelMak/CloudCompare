@@ -13,13 +13,11 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
       rejectUnauthorized: false, // Set to true for production
       ca: readFileSync(pathToCert).toString(),
     };
-    const client = new Client({
+      console.log(`PostgreSQL Client Configuration:`, {
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
         port: 5432,
-        ssl: ssl,
       });
       console.log('Client created:');
       console.log(client);
@@ -44,7 +42,7 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
         }),
         };
       } catch (error) {
-        console.error('Error creating table:', JSON.stringify(error, null, 2));
+        console.error('Error creating table:', JSON.stringify(error, null, 2), error.stack);
         return {
           statusCode: 500,
           body: JSON.stringify({
