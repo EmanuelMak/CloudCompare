@@ -22,6 +22,8 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
         port: parseInt(process.env.DB_PORT || '5432'),
         ssl: ssl,
     });
+    console.log("client test:");
+    console.log(client);
 
     try {
         await client.connect();
