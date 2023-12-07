@@ -43,7 +43,7 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Map<String, Objec
             return new PrimeCheckResponse(isPrime, allPrimes);
         } catch (SQLException e) {
             System.out.println("DB_URL: " + System.getenv("DB_HOST"));
-            System.out.println("DB_USER: " + System.getenv("DB_USERNAME"));
+            System.out.println("DB_USER: " + System.getenv("DB_USER"));
             System.out.println("DB_HOST: " + System.getenv("DB_HOST"));
             throw new RuntimeException("Database connection failed", e);
         }

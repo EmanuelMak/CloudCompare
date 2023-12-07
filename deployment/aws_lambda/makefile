@@ -31,7 +31,8 @@ pushLambdaImagesToEcr:
 destroyLambdaFunctionsOnly:
 	terraform destroy -target=aws_lambda_function.camel_case_lambda -target=aws_lambda_function.check_prime_lambda -target=aws_lambda_function.db_setup_lambda
 redeployLambda:
-	terraform taint aws_lambda_function.db_setup_lambda
+	terraform taint aws_lambda_function.db_setup_lambda 
+	terraform taint aws_lambda_function.check_prime_lambda
 	terraform apply  -auto-approve 
 
 testCamelCase:
