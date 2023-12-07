@@ -12,7 +12,7 @@ import com.th.ro.emanuel.thesis.checkprime.PrimeChecker;
 public class PrimeCheckLambdaHandler implements RequestHandler<Map<String, Object>, PrimeCheckResponse> {
 
     private static final String DB_HOST = System.getenv("DB_HOST");
-    private static final String DB_USER = System.getenv("DB_USERNAME");
+    private static final String DB_USER = System.getenv("DB_USER");
     private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
     private static final String DB_NAME = System.getenv("DB_NAME");
     private static final String DB_URL = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":5432/" + System.getenv("DB_NAME") + "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory";
@@ -33,7 +33,9 @@ public class PrimeCheckLambdaHandler implements RequestHandler<Map<String, Objec
         }
 
         Long number = parsedValue;
+        System.out.println("Attempting to connect to the database");
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            System.out.println("Database connection established");
             boolean isPrime = checkAndSavePrime(number, connection);
 
             List<Long> allPrimes = getAllPrimes(connection);
