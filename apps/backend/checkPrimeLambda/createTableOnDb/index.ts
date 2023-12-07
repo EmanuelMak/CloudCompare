@@ -5,6 +5,9 @@ import { readFileSync } from 'fs';
 export const handler = async (event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> => {
     console.log(`Event: ${JSON.stringify(event, null, 2)}`);
     console.log(`Context: ${JSON.stringify(context, null, 2)}`);
+    console.log(`DB Host: ${process.env.DB_HOST}`);
+    console.log(`DB Name: ${process.env.DB_NAME}`);
+    console.log(`DB User: ${process.env.DB_USERNAME}`);
     const pathToCert = './rds-combined-ca-bundle.pem';
     const ssl = {
       rejectUnauthorized: false, // Set to true for production
@@ -41,12 +44,14 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
         }),
         };
       } catch (error) {
-        console.error('Error creating table:', error);
+        console.error('Error creating table:', JSON.stringify(error, null, 2));
         return {
           statusCode: 500,
           body: JSON.stringify({
             message: 'Failed to create table',
         }),
         };
+      } finally {
+        await client.end();
       }
 };
