@@ -33,6 +33,7 @@ destroyLambdaFunctionsOnly:
 redeployLambda:
 	terraform taint aws_lambda_function.db_setup_lambda 
 	terraform taint aws_lambda_function.check_prime_lambda
+	terraform taint aws_lambda_function.camel_case_lambda
 	terraform apply  -auto-approve 
 
 testCamelCase:

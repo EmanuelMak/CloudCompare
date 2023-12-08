@@ -1,0 +1,14 @@
+checkPrime:
+  db:
+    host: [33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mNo outputs found[0m
+[33m│[0m [0m
+[33m│[0m [0m[0mThe state file either has no outputs defined, or all the defined outputs are empty.
+[33m│[0m [0mPlease define an output in your configuration with the `output` keyword and run
+[33m│[0m [0m`terraform refresh` for it to become available. If you are using interpolation, please
+[33m│[0m [0mverify the interpolated value is not empty. You can use the `terraform console` command
+[33m│[0m [0mto assist.
+[33m╵[0m[0m
+    name: mydb
+    username: dbuser
+    password: init1000
