@@ -1,3 +1,5 @@
+#good example of terraform-aws-modules/vpc/aws module usage: https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples
+
 terraform {
   required_providers {
     aws = {

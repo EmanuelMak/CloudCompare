@@ -1,0 +1,10 @@
+[
+    {
+      "essential": true,
+      "memory": 512,
+      "name": "worker",
+      "cpu": 2,
+      "image": "${${var.ECR_REPO_URI}}:latest",
+      "environment": []
+    }
+  ]

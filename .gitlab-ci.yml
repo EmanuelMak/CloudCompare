@@ -5,6 +5,7 @@ variables:
   PATH_TO_SPRINGBOOT_CHECKPRIME: ./apps/backend/checkPrime_springboot
   PATH_TO_CAMELCASE_LAMBDA: ./apps/backend/cammelCaseLambda
   PATH_TO_CHECKPRIME_LAMBDA: ./apps/backend/checkPrimeLambda
+  PATH_TO_LOCUST_LOADTESTER: ./locustLoadTests
 stages:
   - preinit
   - init
@@ -115,6 +116,16 @@ buildAndPushToDockerHubCheckPrimeLambda:
     - vlt run --command="make pushToDockerhubCreateTableLambda"
   dependencies:
     - deployCamelCaseConverterMavenToRegistry
+
+
+buildAndPushDockerLocustLoadTesterImage:
+  stage: build
+  image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest 
+  services:
+    - docker:dind
+  script:
+    - cd $PATH_TO_LOCUST_LOADTESTER
+    - vlt run --command="make buildAndPushDockerImage"
 
 pushToEcrAwsLambda:
   image: inf-docker.fh-rosenheim.de/sinfemmakk/cloudcompare/docker:latest 
