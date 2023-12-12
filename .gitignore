@@ -40,6 +40,11 @@ surefire-reports/
 maven-status/
 
 
+
+*_history.csv
+
+
+
 .teraform/*
 .terraform/
 secrets.yaml
