@@ -50,6 +50,8 @@ maven-status/
 secrets.yaml
 */secrets.yaml
 *.tfvars
+.terraform.*/*
+.terraform.*
 
 
 .DS_Store
@@ -64,3 +66,4 @@ secrets.yaml
 createTableOnRdsLambda/
 */dist/
 dist/
+
