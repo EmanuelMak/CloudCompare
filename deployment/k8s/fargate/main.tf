@@ -45,18 +45,23 @@ module "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Terraform   = "true"
-    Environment = "dev"
+    Terraform             = "true"
+    Environment           = "dev"
+    "thesis-cost-general" = "fargate"
   }
   public_subnet_tags = {
-    Name                                        = "Public Subnets"
-    "kubernetes.io/role/elb"                    = 1
+    Name                                   = "Public Subnets"
+    "kubernetes.io/role/elb"               = 1
     "kubernetes.io/cluster/my-eks-cluster" = "shared"
+    "thesis-cost-traffic"                  = "fargate"
+    "thesis-cost-general"                  = "fargate"
   }
   private_subnet_tags = {
-    Name                                        = "private-subnets"
-    "kubernetes.io/role/internal-elb"           = 1
+    Name                                   = "private-subnets"
+    "kubernetes.io/role/internal-elb"      = 1
     "kubernetes.io/cluster/my-eks-cluster" = "shared"
+    "thesis-cost-traffic"                  = "fargate"
+    "thesis-cost-general"                  = "fargate"
   }
 }
 module "eks" {
@@ -69,8 +74,8 @@ module "eks" {
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.vpc.private_subnets
   control_plane_subnet_ids = module.vpc.intra_subnets
 
   enable_irsa = true
@@ -94,20 +99,31 @@ module "eks" {
     }
   }
   tags = {
-    Environment = "dev"
+    Environment           = "dev"
+    "thesis-cost-vm"      = "fargate"
+    "thesis-cost-general" = "fargate"
   }
 
 
   #fargate profile defenition
   fargate_profiles = {
     default_profile = {
-      name       = "default-profile"
-      selectors  = [
+      name = "default-profile"
+      selectors = [
         { namespace = "default" }
       ]
       subnet_ids = module.vpc.private_subnets
     }
+    kube_system_profile = {
+      name = "kube-system-profile"
+      selectors = [
+        { namespace = "kube-system" }
+      ]
+      subnet_ids = module.vpc.private_subnets
+    }
   }
+
+
 }
 
 resource "aws_iam_policy" "fargate_ec2_describe" {
@@ -133,16 +149,18 @@ resource "aws_iam_policy" "fargate_ec2_describe" {
 
 # DB Subnet Group
 resource "aws_db_subnet_group" "my_db_subnet_group" {
-  name       = "my-db-subnet-group"
+  name       = "my-fargate-db-subnet-group"
   subnet_ids = module.vpc.private_subnets
 
   tags = {
-    Name        = "my-db-subnet-group"
-    Environment = "dev"
+    Name                  = "my-fargate-db-subnet-group"
+    Environment           = "dev"
+    "thesis-cost-db"      = "fargate"
+    "thesis-cost-general" = "fargate"
   }
 }
 
-resource "aws_db_instance" "my_db" {
+resource "aws_db_instance" "my_fargate_db" {
   allocated_storage    = 5
   engine               = "postgres"
   engine_version       = "15.3"
@@ -154,12 +172,17 @@ resource "aws_db_instance" "my_db" {
   skip_final_snapshot  = true
   db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
 
-  vpc_security_group_ids = [aws_security_group.db_sg.id]
+  vpc_security_group_ids = [aws_security_group.fargate_db_sg.id]
+  tags = {
+    "thesis-cost-db"      = "fargate"
+    "thesis-cost-general" = "fargate"
+  }
+
 }
 
 
 
-resource "aws_security_group" "db_sg" {
+resource "aws_security_group" "fargate_db_sg" {
   name        = "my-db-sg"
   description = "Database security group"
   vpc_id      = module.vpc.vpc_id
@@ -170,14 +193,18 @@ resource "aws_security_group" "db_sg" {
     protocol    = "tcp"
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
+  tags = {
+    "thesis-cost-traffic" = "fargate"
+    "thesis-cost-general" = "fargate"
+  }
 }
 
 output "db_endpoint" {
-  value = aws_db_instance.my_db.address
+  value = aws_db_instance.my_fargate_db.address
 }
 
 output "db_port" {
-  value = aws_db_instance.my_db.port
+  value = aws_db_instance.my_fargate_db.port
 }
 
 

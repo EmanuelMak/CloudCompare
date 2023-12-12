@@ -1,0 +1,9 @@
+apiVersion: v2
+name: my-application
+version: 1.0.0
+dependencies:
+  - name: metrics-server
+    version: "3.11.0" #https://github.com/kubernetes-sigs/metrics-server/tags
+    repository: "https://kubernetes-sigs.github.io/metrics-server/"
+    # condition: metrics-server.enabled (optional)
+

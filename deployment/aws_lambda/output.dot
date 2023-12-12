@@ -1,0 +1,18 @@
+strict digraph G {
+	"aws_lambda_function.camel_case_lambda"->"aws_db_instance.em_thesis_lambda_db";
+	"aws_db_instance.em_thesis_lambda_db"->"aws_lambda_function.camel_case_lambda";
+	"aws_lambda_function.check_prime_lambda"->"aws_db_instance.em_thesis_lambda_db";
+	"aws_lambda_function.check_prime_lambda"->"aws_lambda_function.camel_case_lambda";
+	"aws_lambda_function.db_setup_lambda"->"aws_db_instance.em_thesis_lambda_db";
+	"aws_lambda_function.db_setup_lambda"->"aws_lambda_function.camel_case_lambda";
+	"im_out.-1/0->0"->"aws_lambda_function.camel_case_lambda";
+	"im_out.-1/0->0"->"aws_db_instance.em_thesis_lambda_db";
+	"im_out.-1/0->0"->"aws_lambda_function.check_prime_lambda";
+	"im_out.-1/0->0"->"aws_lambda_function.db_setup_lambda";
+	"aws_db_instance.em_thesis_lambda_db" [ height=1.15, image="/Users/emanuelmak/Library/Caches/inframap/assets/aws/Database/Amazon-RDS.png", imagepos=tc, labelloc=b, shape=plaintext ];
+	"aws_lambda_function.camel_case_lambda" [ height=1.15, image="/Users/emanuelmak/Library/Caches/inframap/assets/aws/Compute/AWS-Lambda_Lambda-Function_light-bg.png", imagepos=tc, labelloc=b, shape=plaintext ];
+	"aws_lambda_function.check_prime_lambda" [ height=1.15, image="/Users/emanuelmak/Library/Caches/inframap/assets/aws/Compute/AWS-Lambda_Lambda-Function_light-bg.png", imagepos=tc, labelloc=b, shape=plaintext ];
+	"aws_lambda_function.db_setup_lambda" [ height=1.15, image="/Users/emanuelmak/Library/Caches/inframap/assets/aws/Compute/AWS-Lambda_Lambda-Function_light-bg.png", imagepos=tc, labelloc=b, shape=plaintext ];
+	"im_out.-1/0->0" [ height=1.15, image="/Users/emanuelmak/Library/Caches/inframap/assets/im/baseline_cloud_queue_black.png", imagepos=tc, labelloc=b, shape=plaintext ];
+
+}

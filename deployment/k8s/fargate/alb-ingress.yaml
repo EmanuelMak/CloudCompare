@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /convertToCamelCase
+            pathType: Prefix
+            backend:
+              service:
+                name: camelcase-service
+                port:
+                  number: 80
+          - path: /checkIsPrimeNumber
+            pathType: Prefix
+            backend:
+              service:
+                name: checkprime-service
+                port:
+                  number: 80

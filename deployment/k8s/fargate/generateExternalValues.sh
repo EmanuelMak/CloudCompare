@@ -19,6 +19,12 @@ checkPrime:
     name: $DB_NAME
     username: $DB_USERNAME
     password: $DB_PASSWORD
+
+nginx-ingress:
+  enabled: false
+ingress-nginx:
+  enabled: false
+ignoreIngress: true
 EOF
 
 echo "external-values.yaml file has been generated."

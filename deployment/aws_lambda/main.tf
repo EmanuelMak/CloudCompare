@@ -26,18 +26,30 @@ resource "aws_subnet" "lambda_subnet_1" {
   vpc_id     = aws_vpc.lambda_vpc.id
   cidr_block = "10.0.1.0/24"
   availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-traffic" = "lambda"
+  }
 }
 
 resource "aws_subnet" "lambda_subnet_2" {
   vpc_id            = aws_vpc.lambda_vpc.id
   cidr_block        = "10.0.3.0/24"
   availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-traffic" = "lambda"
+  }
 }
 
 # RDS Subnet Group
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "my-rds-subnet-group"
   subnet_ids = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-traffic" = "lambda"
+  }
 }
 
 # Security Groups Configuration
@@ -92,6 +104,10 @@ resource "aws_db_instance" "em_thesis_lambda_db" {
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   #publicly_accessible = true
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-db" = "lambda"
+  }
 }
 
 
@@ -182,6 +198,10 @@ resource "aws_lambda_function" "camel_case_lambda" {
     subnet_ids         = [aws_subnet.lambda_subnet_1.id, aws_subnet.lambda_subnet_2.id]
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-vm" = "lambda"
+  }
 }
 
 resource "aws_iam_policy" "lambda_vpc_access_policy" {
@@ -227,12 +247,20 @@ resource "aws_lambda_function" "check_prime_lambda" {
       DB_NAME     = var.DB_NAME
     }
   }
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-vm" = "lambda"
+  }
 }
 
 # API Gateway Configuration
 resource "aws_api_gateway_rest_api" "my_api" {
   name        = "MyAPI"
   description = "API Gateway for Lambda functions"
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-endpoint" = "lambda"
+  }
 }
 
 resource "aws_api_gateway_resource" "camel_case_resource" {
@@ -316,6 +344,9 @@ resource "aws_api_gateway_stage" "lambdagateway" {
 
 resource "aws_cloudwatch_log_group" "api_gateway_logs" {
   name = "/aws/api_gateway/my_api_logs"
+  tags = {
+    "thesis-cost-general" = "lambda"
+  }
 }
 
 
@@ -428,6 +459,10 @@ resource "aws_lambda_function" "db_setup_lambda" {
       DB_PASSWORD = var.DB_PASSWORD
       DB_NAME     = var.DB_NAME
     }
+  }
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-vm" = "lambda"
   }
 }
 

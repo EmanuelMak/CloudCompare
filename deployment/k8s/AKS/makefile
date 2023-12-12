@@ -13,3 +13,6 @@ setKubectlAksContext:
 
 resetKubectlAksContext:
 	- mv ~/.kube/config.bak ~/.kube/config
+
+deinstallDefaultMetricsAks:
+	kubectl delete apiservice v1beta1.metrics.k8s.io

@@ -1,6 +1,6 @@
 .PHONY: setKubectlAwsContext
 
-EKS_CLUSTER_NAME=my-eks-cluster
+EKS_CLUSTER_NAME=my-eks-fargate-cluster
 
 setKubectlAwsContext:
 	- aws eks update-kubeconfig --name $(EKS_CLUSTER_NAME)
@@ -36,6 +36,7 @@ updateExternalValues:
 	vlt secrets update k8s_values "$$file_content" || vlt secrets create k8s_values "$$file_content"
 
 
-
+replaceIngress:
+	kubectl apply -f ./alb-ingress.yaml
 	
 

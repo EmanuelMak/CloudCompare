@@ -48,7 +48,7 @@ resource "azurerm_subnet" "aks_subnet" {
   name                 = "aksSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = ["10.0.1.0/24"]
 }
 
 # AKS Cluster
@@ -71,6 +71,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
   network_profile {
     network_plugin = "azure"
+    service_cidr   = "10.1.0.0/16"
+    dns_service_ip = "10.1.0.10"
   }
 }
 
@@ -79,7 +81,7 @@ resource "azurerm_subnet" "postgres_subnet" {
   name                 = "postgresSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.0.3.0/24"]
   service_endpoints    = ["Microsoft.Sql"]
 }
 
@@ -104,6 +106,13 @@ resource "azurerm_network_security_rule" "postgres_rule" {
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.postgres_nsg.name
 }
+# resource "azurerm_postgresql_firewall_rule" "allow_all" {
+#   name                = "allow_all"
+#   resource_group_name = azurerm_postgresql_server.postgres_endpoint_aks.resource_group_name
+#   server_name         = azurerm_postgresql_server.postgres_endpoint_aks.name
+#   start_ip_address    = "0.0.0.0"
+#   end_ip_address      = "255.255.255.255"
+#}
 
 # Association of NSG with PostgreSQL Subnet
 resource "azurerm_subnet_network_security_group_association" "postgres_subnet_nsg_association" {
@@ -112,28 +121,42 @@ resource "azurerm_subnet_network_security_group_association" "postgres_subnet_ns
 }
 
 # Azure PostgreSQL Server
-resource "azurerm_postgresql_server" "postgres" {
-  name                        = "my-postgres-server"
-  location                    = azurerm_resource_group.rg.location
-  resource_group_name         = azurerm_resource_group.rg.name
-  administrator_login         = "psqladmin"
-  administrator_login_password = "H@Sh1CoR3!"
-  sku_name                    = "B_Gen5_2"
-  version                     = "11"
-  storage_mb                  = 5120
-  backup_retention_days       = 7
+resource "azurerm_postgresql_server" "postgres_endpoint_aks" {
+  name                = "my-postgres-server"
+ 
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  sku_name = "GP_Gen5_4"
+
+  storage_mb                   = 5120
+  backup_retention_days        = 7
   geo_redundant_backup_enabled = false
-  auto_grow_enabled           = true
-  public_network_access_enabled = false
-  ssl_enforcement_enabled     = true
-  ssl_minimal_tls_version_enforced = "TLS1_2"
+  auto_grow_enabled            = true
+
+  administrator_login          = var.DB_USERNAME
+  administrator_login_password = "H@Sh1CoR3!"
+  version                      = "11"
+  public_network_access_enabled = true
+  ssl_enforcement_enabled     = false
+  ssl_minimal_tls_version_enforced = "TLSEnforcementDisabled"
+
+}
+resource "azurerm_postgresql_database" "postgres_endpoint_aks" {
+  name                = var.DB_NAME 
+  resource_group_name = azurerm_postgresql_server.postgres_endpoint_aks.resource_group_name
+  server_name         = azurerm_postgresql_server.postgres_endpoint_aks.name
+  charset             = "UTF8"
+  collation           = "English_United States.1252"
 }
 
-# Outputs
+# Outputst
 output "aks_cluster_id" {
   value = azurerm_kubernetes_cluster.aks_cluster.id
 }
 
 output "postgres_endpoint" {
-  value = azurerm_postgresql_server.postgres.fqdn
+  value = azurerm_postgresql_server.postgres_endpoint_aks.fqdn
 }
+
+

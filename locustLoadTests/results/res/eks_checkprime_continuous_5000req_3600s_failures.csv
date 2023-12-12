@@ -1,0 +1,22 @@
+Method,Name,Error,Occurrences
+GET,/checkprime/checkIsPrimeNumber?number=34410386771974021,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=34410386771974021'),1
+GET,/checkprime/checkIsPrimeNumber?number=99040979960011715,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=99040979960011715'),1
+GET,/checkprime/checkIsPrimeNumber?number=71490801757759968,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=71490801757759968'),1
+GET,/checkprime/checkIsPrimeNumber?number=20706057873010212,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=20706057873010212'),1
+GET,/checkprime/checkIsPrimeNumber?number=83296612977448370,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=83296612977448370'),1
+GET,/checkprime/checkIsPrimeNumber?number=55768028728888056,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=55768028728888056'),1
+GET,/checkprime/checkIsPrimeNumber?number=23159019060130376,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=23159019060130376'),1
+GET,/checkprime/checkIsPrimeNumber?number=17639590185866692,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=17639590185866692'),1
+GET,/checkprime/checkIsPrimeNumber?number=25865356047615881,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=25865356047615881'),1
+GET,/checkprime/checkIsPrimeNumber?number=21865639159612738,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=21865639159612738'),1
+GET,/checkprime/checkIsPrimeNumber?number=75487403419323660,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=75487403419323660'),1
+GET,/checkprime/checkIsPrimeNumber?number=28543457437562670,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=28543457437562670'),1
+GET,/checkprime/checkIsPrimeNumber?number=17368734545301271,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=17368734545301271'),1
+GET,/checkprime/checkIsPrimeNumber?number=38840124032654989,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=38840124032654989'),1
+GET,/checkprime/checkIsPrimeNumber?number=54019605329584189,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=54019605329584189'),1
+GET,/checkprime/checkIsPrimeNumber?number=92609740205880406,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=92609740205880406'),1
+GET,/checkprime/checkIsPrimeNumber?number=79760675968686348,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=79760675968686348'),1
+GET,/checkprime/checkIsPrimeNumber?number=11945529080231600,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=11945529080231600'),1
+GET,/checkprime/checkIsPrimeNumber?number=47118702215257494,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=47118702215257494'),1
+GET,/checkprime/checkIsPrimeNumber?number=43220708490213457,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=43220708490213457'),1
+GET,/checkprime/checkIsPrimeNumber?number=94171177840663946,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=94171177840663946'),1

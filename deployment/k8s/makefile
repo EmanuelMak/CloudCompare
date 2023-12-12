@@ -26,7 +26,7 @@ helmInstall:
 	- cd ./helm && helm install thesis-cloudcompare-release . -f values.yaml -f external-values.yaml
 
 helmDelete:
-	- cd ./helm && helm delete thesis-cloudcompare-release . 
+	- cd ./helm && helm delete thesis-cloudcompare-release
 
 helmDependencyUpdate:
 	- helm dependency update ./helm

@@ -1,0 +1,253 @@
+{
+  "id" : 1,
+  "name" : "Cloud Application Architecture",
+  "description" : "An example AWS deployment architecture for the cloud application.",
+  "lastModifiedDate" : "2023-12-11T11:57:46Z",
+  "lastModifiedAgent" : "structurizr-javascript",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJDbG91ZCBBcHBsaWNhdGlvbiBBcmNoaXRlY3R1cmUiICJBbiBleGFtcGxlIEFXUyBkZXBsb3ltZW50IGFyY2hpdGVjdHVyZSBmb3IgdGhlIGNsb3VkIGFwcGxpY2F0aW9uLiIgewoKICAgIG1vZGVsIHsKICAgICAgICBteVNlcnZpY2UgPSBzb2Z0d2FyZVN5c3RlbSAiTXkgU2VydmljZSIgIlRoZSBtYWluIHNlcnZpY2Ugb2YgdGhlIGFwcGxpY2F0aW9uLiIgewogICAgICAgICAgICBteVNlcnZpY2VBcHAgPSBjb250YWluZXIgIkFwcGxpY2F0aW9uIiAiSGFuZGxlcyBidXNpbmVzcyBsb2dpYyBhbmQgdXNlciByZXF1ZXN0cy4iICJKYXZhIGFuZCBTcHJpbmcgQm9vdCIgewogICAgICAgICAgICAgICAgdGFncyAiQXBwbGljYXRpb24iCiAgICAgICAgICAgIH0KICAgICAgICAgICAgbXlTZXJ2aWNlREIgPSBjb250YWluZXIgIkRhdGFiYXNlIiAiU3RvcmVzIGFwcGxpY2F0aW9uIGRhdGEuIiAiUmVsYXRpb25hbCBkYXRhYmFzZSBzY2hlbWEiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIgogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIiAiSW50ZXJhY3RzIHdpdGggdGhlIGFwcGxpY2F0aW9uLiIKICAgICAgICB1c2VyIC0+IG15U2VydmljZUFwcCAiVXNlcyIKCiAgICAgICAgbGl2ZSA9IGRlcGxveW1lbnRFbnZpcm9ubWVudCAiTGl2ZSIgewoKICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgIkFtYXpvbiBXZWIgU2VydmljZXMiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBDbG91ZCIKCiAgICAgICAgICAgICAgICByZWdpb24gPSBkZXBsb3ltZW50Tm9kZSAiRXVyb3BlIChGcmFua2Z1cnQpIiB7CiAgICAgICAgICAgICAgICAgICAgdGFncyAiQW1hem9uIFdlYiBTZXJ2aWNlcyAtIFJlZ2lvbiIKCiAgICAgICAgICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgIkFXUyBWUEMiICJWaXJ0dWFsIFByaXZhdGUgQ2xvdWQiIHsKICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiQW1hem9uIFdlYiBTZXJ2aWNlcyAtIFZQQyIKCiAgICAgICAgICAgICAgICAgICAgICAgIGRlcGxveW1lbnROb2RlICJBV1MgRUMyIiAiRWxhc3RpYyBDb21wdXRlIENsb3VkIiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJBbWF6b24gV2ViIFNlcnZpY2VzIC0gRUMyIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgbXlTZXJ2aWNlQXBwSW5zdGFuY2UgPSBjb250YWluZXJJbnN0YW5jZSBteVNlcnZpY2VBcHAKICAgICAgICAgICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgIkFXUyBSRFMiICJSZWxhdGlvbmFsIERhdGFiYXNlIFNlcnZpY2UiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIkFtYXpvbiBXZWIgU2VydmljZXMgLSBSRFMiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBteVNlcnZpY2VEQkluc3RhbmNlID0gY29udGFpbmVySW5zdGFuY2UgbXlTZXJ2aWNlREIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICB2aWV3cyB7CiAgICAgICAgc3lzdGVtQ29udGV4dCBteVNlcnZpY2UgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgZGVwbG95bWVudCBteVNlcnZpY2UgIkxpdmUiICJBbWF6b25XZWJTZXJ2aWNlc0RlcGxveW1lbnQiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9MYXlvdXQgbHIKCiAgICAgICAgICAgIGFuaW1hdGlvbiB7CiAgICAgICAgICAgICAgICBteVNlcnZpY2VBcHBJbnN0YW5jZQogICAgICAgICAgICAgICAgbXlTZXJ2aWNlREJJbnN0YW5jZQogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJFbGVtZW50IiB7CiAgICAgICAgICAgICAgICBzaGFwZSByb3VuZGVkYm94CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJDb250YWluZXIiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI2ZmZmZmZgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkFwcGxpY2F0aW9uIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgdGhlbWVzIGh0dHBzOi8vc3RhdGljLnN0cnVjdHVyaXpyLmNvbS90aGVtZXMvYW1hem9uLXdlYi1zZXJ2aWNlcy0yMDIwLjA0LjMwL3RoZW1lLmpzb24KICAgIH0KCn0K"
+  },
+  "configuration" : { },
+  "model" : {
+    "people" : [ {
+      "id" : "4",
+      "tags" : "Element,Person",
+      "properties" : {
+        "structurizr.dsl.identifier" : "user"
+      },
+      "name" : "User",
+      "description" : "Interacts with the application.",
+      "relationships" : [ {
+        "id" : "6",
+        "sourceId" : "4",
+        "destinationId" : "1",
+        "description" : "Uses",
+        "linkedRelationshipId" : "5"
+      }, {
+        "id" : "5",
+        "tags" : "Relationship",
+        "properties" : {
+          "structurizr.dsl.identifier" : "86b00aea-467f-4c23-8558-00b52ee20a84"
+        },
+        "sourceId" : "4",
+        "destinationId" : "2",
+        "description" : "Uses"
+      } ],
+      "location" : "Unspecified"
+    } ],
+    "softwareSystems" : [ {
+      "id" : "1",
+      "tags" : "Element,Software System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "myservice"
+      },
+      "name" : "My Service",
+      "description" : "The main service of the application.",
+      "location" : "Unspecified",
+      "containers" : [ {
+        "id" : "3",
+        "tags" : "Element,Container,Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "myservicedb"
+        },
+        "name" : "Database",
+        "description" : "Stores application data.",
+        "technology" : "Relational database schema",
+        "documentation" : { }
+      }, {
+        "id" : "2",
+        "tags" : "Element,Container,Application",
+        "properties" : {
+          "structurizr.dsl.identifier" : "myserviceapp"
+        },
+        "name" : "Application",
+        "description" : "Handles business logic and user requests.",
+        "technology" : "Java and Spring Boot",
+        "documentation" : { }
+      } ],
+      "documentation" : { }
+    } ],
+    "deploymentNodes" : [ {
+      "id" : "7",
+      "tags" : "Element,Deployment Node,Amazon Web Services - Cloud",
+      "properties" : {
+        "structurizr.dsl.identifier" : "d55b2ba5-0315-475c-83b8-b7077d8f80b9"
+      },
+      "name" : "Amazon Web Services",
+      "environment" : "Live",
+      "instances" : "1",
+      "children" : [ {
+        "id" : "8",
+        "tags" : "Element,Deployment Node,Amazon Web Services - Region",
+        "properties" : {
+          "structurizr.dsl.identifier" : "region"
+        },
+        "name" : "Europe (Frankfurt)",
+        "environment" : "Live",
+        "instances" : "1",
+        "children" : [ {
+          "id" : "9",
+          "tags" : "Element,Deployment Node,Amazon Web Services - VPC",
+          "properties" : {
+            "structurizr.dsl.identifier" : "fb64441b-3d9f-417f-95bd-6b8eb0e2feba"
+          },
+          "name" : "AWS VPC",
+          "description" : "Virtual Private Cloud",
+          "environment" : "Live",
+          "instances" : "1",
+          "children" : [ {
+            "id" : "10",
+            "tags" : "Element,Deployment Node,Amazon Web Services - EC2",
+            "properties" : {
+              "structurizr.dsl.identifier" : "06c5345f-d3e9-4530-a885-840135be76ef"
+            },
+            "name" : "AWS EC2",
+            "description" : "Elastic Compute Cloud",
+            "environment" : "Live",
+            "instances" : "1",
+            "containerInstances" : [ {
+              "id" : "11",
+              "tags" : "Container Instance",
+              "properties" : {
+                "structurizr.dsl.identifier" : "myserviceappinstance"
+              },
+              "environment" : "Live",
+              "deploymentGroups" : [ "Default" ],
+              "instanceId" : 1,
+              "containerId" : "2"
+            } ]
+          }, {
+            "id" : "12",
+            "tags" : "Element,Deployment Node,Amazon Web Services - RDS",
+            "properties" : {
+              "structurizr.dsl.identifier" : "e2b94e33-0af1-4dcc-95f9-cdcc89562fc1"
+            },
+            "name" : "AWS RDS",
+            "description" : "Relational Database Service",
+            "environment" : "Live",
+            "instances" : "1",
+            "containerInstances" : [ {
+              "id" : "13",
+              "tags" : "Container Instance",
+              "properties" : {
+                "structurizr.dsl.identifier" : "myservicedbinstance"
+              },
+              "environment" : "Live",
+              "deploymentGroups" : [ "Default" ],
+              "instanceId" : 1,
+              "containerId" : "3"
+            } ]
+          } ]
+        } ]
+      } ]
+    } ]
+  },
+  "documentation" : { },
+  "views" : {
+    "systemContextViews" : [ {
+      "key" : "SystemContext-001",
+      "order" : 1,
+      "softwareSystemId" : "1",
+      "dimensions" : {
+        "width" : 1600,
+        "height" : 700
+      },
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false,
+        "applied" : true
+      },
+      "enterpriseBoundaryVisible" : true,
+      "elements" : [ {
+        "id" : "1",
+        "x" : 950,
+        "y" : 200
+      }, {
+        "id" : "4",
+        "x" : 200,
+        "y" : 200
+      } ],
+      "relationships" : [ {
+        "id" : "6"
+      } ]
+    } ],
+    "deploymentViews" : [ {
+      "key" : "AmazonWebServicesDeployment",
+      "order" : 2,
+      "softwareSystemId" : "1",
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false,
+        "applied" : false
+      },
+      "environment" : "Live",
+      "animations" : [ {
+        "order" : 1,
+        "elements" : [ "11", "7", "8", "9", "10" ]
+      }, {
+        "order" : 2,
+        "elements" : [ "12", "13" ]
+      } ],
+      "elements" : [ {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      } ]
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "styles" : {
+        "elements" : [ {
+          "tag" : "Element",
+          "background" : "#ffffff",
+          "shape" : "RoundedBox"
+        }, {
+          "tag" : "Container",
+          "background" : "#ffffff"
+        }, {
+          "tag" : "Application",
+          "background" : "#ffffff"
+        }, {
+          "tag" : "Database",
+          "shape" : "Cylinder"
+        } ]
+      },
+      "themes" : [ "https://static.structurizr.com/themes/amazon-web-services-2020.04.30/theme.json" ],
+      "terminology" : { },
+      "metadataSymbols" : "SquareBrackets",
+      "lastSavedView" : "SystemContext-001"
+    }
+  }
+}

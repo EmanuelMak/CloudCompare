@@ -1,0 +1,6 @@
+checkPrime:
+  db:
+    host: my-postgres-server.postgres.database.azure.com
+    name: mydb
+    username: dbuser@my-postgres-server
+    password: H@Sh1CoR3!

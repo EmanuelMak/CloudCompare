@@ -1,0 +1,7 @@
+Method,Name,Error,Occurrences
+GET,/checkIsPrimeNumber?number=43805559158157497,"ReadTimeout(ReadTimeoutError(""HTTPConnectionPool(host='ecs-alb-286464239.eu-central-1.elb.amazonaws.com', port=80): Read timed out. (read timeout=30)""))",1
+GET,/checkIsPrimeNumber?number=97318485596401369,"ReadTimeout(ReadTimeoutError(""HTTPConnectionPool(host='ecs-alb-286464239.eu-central-1.elb.amazonaws.com', port=80): Read timed out. (read timeout=30)""))",1
+GET,/checkIsPrimeNumber?number=73868879327496641,"ReadTimeout(ReadTimeoutError(""HTTPConnectionPool(host='ecs-alb-286464239.eu-central-1.elb.amazonaws.com', port=80): Read timed out. (read timeout=30)""))",1
+GET,/checkIsPrimeNumber?number=68274718449437767,"ReadTimeout(ReadTimeoutError(""HTTPConnectionPool(host='ecs-alb-286464239.eu-central-1.elb.amazonaws.com', port=80): Read timed out. (read timeout=30)""))",1
+GET,/checkIsPrimeNumber?number=56050219858226387,"ReadTimeout(ReadTimeoutError(""HTTPConnectionPool(host='ecs-alb-286464239.eu-central-1.elb.amazonaws.com', port=80): Read timed out. (read timeout=30)""))",1
+GET,/checkIsPrimeNumber?number=32607233827663051,"ReadTimeout(ReadTimeoutError(""HTTPConnectionPool(host='ecs-alb-286464239.eu-central-1.elb.amazonaws.com', port=80): Read timed out. (read timeout=30)""))",1

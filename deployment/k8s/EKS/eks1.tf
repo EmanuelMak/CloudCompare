@@ -44,6 +44,7 @@ module "vpc" {
   tags = {
     Terraform   = "true"
     Environment = "dev"
+    thesis-cost-general = "eks"
   }
   public_subnet_tags = {
     Name                                        = "Public Subnets"
@@ -102,6 +103,11 @@ module "eks" {
           effect = "NO_SCHEDULE"
         }
       ]
+      tags = {
+        lifecycle = "spot"
+        thesis-cost-vm = "eks-spot"
+        thesis-cost-general = "eks"
+      }
     }
     on_demand_group = {
       instance_types = ["t2.small"]
@@ -111,11 +117,17 @@ module "eks" {
       labels = {
         lifecycle = "on-demand"
       }
-      # ... other configurations ...
+      tags = {
+        lifecycle = "on-demand"
+        thesis-cost-vm = "eks-on-demand"
+        thesis-cost-general = "eks"
+      }
     }
   }
   tags = {
     Environment = "dev"
+    thesis-cost-vm   = "eks"
+    thesis-cost-general = "eks"
   }
 }
 
@@ -131,6 +143,8 @@ resource "aws_db_subnet_group" "my_db_subnet_group" {
   tags = {
     Name        = "my-db-subnet-group"
     Environment = "dev"
+    thesis-cost-db = "eks"
+    thesis-cost-general = "eks"
   }
 }
 
@@ -147,6 +161,13 @@ resource "aws_db_instance" "my_db" {
   db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
 
   vpc_security_group_ids = [aws_security_group.db_sg.id]
+
+  tags = {
+    Name        = "my-db-instance"
+    Environment = "dev"
+    thesis-cost-db = "eks"
+    thesis-cost-general = "eks"
+  }
 }
 
 
@@ -161,6 +182,12 @@ resource "aws_security_group" "db_sg" {
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+  tags = {
+    Name        = "my-db-sg"
+    Environment = "dev"
+    thesis-cost-db = "eks"
+    thesis-cost-general = "eks"
   }
 }
 

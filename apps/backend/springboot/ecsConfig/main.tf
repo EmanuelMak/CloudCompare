@@ -36,17 +36,17 @@ resource "aws_internet_gateway" "internet_gateway" {
 }
 #############################  Subnet definition ######################
 resource "aws_subnet" "subnet" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 1)
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 1)
   map_public_ip_on_launch = true
-  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "a")
+  availability_zone       = format("%s%s", var.AWS_DEFAULT_REGION, "a")
 }
 
 resource "aws_subnet" "subnet2" {
-  vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 2)
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = cidrsubnet(aws_vpc.main_vpc.cidr_block, 8, 2)
   map_public_ip_on_launch = true
-  availability_zone = format("%s%s", var.AWS_DEFAULT_REGION, "b")
+  availability_zone       = format("%s%s", var.AWS_DEFAULT_REGION, "b")
 }
 #############################  Route table definition ######################
 resource "aws_route_table" "route_table" {
@@ -98,7 +98,7 @@ resource "aws_security_group" "ecs_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {  
+  egress {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
@@ -111,8 +111,8 @@ resource "aws_security_group" "rds_sg" {
 
   ingress {
     protocol        = "tcp"
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = 5432
+    to_port         = 5432
     cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [aws_security_group.ecs_sg.id]
   }
@@ -152,41 +152,34 @@ resource "aws_iam_instance_profile" "ecs_agent" {
   role = aws_iam_role.ecs_agent.name
 }
 #############################  ECS Autoscaling Group ######################
-# resource "aws_launch_configuration" "ecs_launch_config" {
-#   image_id             = "ami-094d4d00fd7462815"
-#   iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
-#   security_groups      = [aws_security_group.ecs_sg.id]
-#   # provide user_data to use named ECS cluster or instances will be launched in default cluster
-#   user_data     = "#!/bin/bash\necho ECS_CLUSTER=my-cluster >> /etc/ecs/ecs.config"
-#   instance_type = "t2.micro"
-# }
+
 
 resource "aws_launch_template" "ecs_lt" {
- name_prefix   = "ecs-template"
- image_id      = "ami-062c116e449466e7f"
- instance_type = "t3.micro"
+  name_prefix   = "ecs-template"
+  image_id      = "ami-062c116e449466e7f"
+  instance_type = "t3.micro"
 
- vpc_security_group_ids = [aws_security_group.ecs_sg.id]
- iam_instance_profile {
-   name = aws_iam_instance_profile.ecs_agent.name
- }
+  vpc_security_group_ids = [aws_security_group.ecs_sg.id]
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ecs_agent.name
+  }
 
- block_device_mappings {
-   device_name = "/dev/xvda"
-   ebs {
-     volume_size = 30
-     volume_type = "gp2"
-   }
- }
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 30
+      volume_type = "gp2"
+    }
+  }
 
- tag_specifications {
-   resource_type = "instance"
-   tags = {
-     Name = "ecs-instance"
-   }
- }
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "ecs-instance"
+    }
+  }
 
- user_data = base64encode("#!/bin/bash\necho ECS_CLUSTER=my-cluster >> /etc/ecs/ecs.config")
+  user_data = base64encode("#!/bin/bash\necho ECS_CLUSTER=my-cluster >> /etc/ecs/ecs.config")
 
 }
 
@@ -197,11 +190,11 @@ resource "aws_launch_template" "ecs_lt" {
 
 
 resource "aws_autoscaling_group" "ecs_asg" {
-  vpc_zone_identifier  = [aws_subnet.subnet.id,  aws_subnet.subnet2.id]
+  vpc_zone_identifier = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
 
-  desired_capacity          = 2
-  min_size                  = 1
-  max_size                  = 3
+  desired_capacity = 2
+  min_size         = 1
+  max_size         = 3
 
   launch_template {
     id      = aws_launch_template.ecs_lt.id
@@ -215,15 +208,15 @@ resource "aws_autoscaling_group" "ecs_asg" {
 }
 #############################  loadbalancer #######################
 resource "aws_lb" "ecs_alb" {
- name               = "ecs-alb"
- internal           = false
- load_balancer_type = "application"
- security_groups    = [aws_security_group.ecs_sg.id]
- subnets            = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
+  name               = "ecs-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.ecs_sg.id]
+  subnets            = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
 
- tags = {
-   Name = "ecs-alb"
- }
+  tags = {
+    Name = "ecs-alb"
+  }
 }
 
 resource "aws_lb_listener" "lb_pub_listener" {
@@ -233,7 +226,7 @@ resource "aws_lb_listener" "lb_pub_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_tg_docker.arn
+    target_group_arn = aws_lb_target_group.prime_numbers_checker_tg.arn
   }
 }
 
@@ -242,16 +235,16 @@ resource "aws_lb_listener_rule" "springboot_greet_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ecs_tg_springboot.arn
+    target_group_arn = aws_lb_target_group.ecs_tg_camelcase.arn
   }
 
   condition {
     path_pattern {
-      values = ["/greeting", "/convertToCamelCase"]
+      values = ["/convertToCamelCase"]
     }
   }
 }
-resource "aws_lb_target_group" "ecs_tg_springboot" {
+resource "aws_lb_target_group" "ecs_tg_camelcase" {
   name        = "ecs-tg-springboot"
   port        = 8080
   protocol    = "HTTP"
@@ -262,15 +255,15 @@ resource "aws_lb_target_group" "ecs_tg_springboot" {
     path = "/actuator/health"
   }
 }
-resource "aws_lb_target_group" "ecs_tg_docker" {
-  name        = "ecs-tg-docker"
+resource "aws_lb_target_group" "prime_numbers_checker_tg" {
+  name        = "ecs-tg-checkprime"
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.main_vpc.id
 
   health_check {
-    path = "/"  # Modify this based on the actual health check endpoint of the Docker Starter App, if it has one.
+    path = "/actuator/health" # Modify this based on the actual health check endpoint of the Docker Starter App, if it has one.
   }
 }
 
@@ -282,62 +275,60 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 
 
 #############################  RDS DB instance ######################
-resource "aws_db_instance" "mysql" {
-  identifier              = "mysql"
-  allocated_storage       = 5
-  backup_retention_period = 2
-  backup_window           = "01:00-01:30"
-  maintenance_window      = "sun:03:00-sun:03:30"
-  # if multiple subnets should be used for high availability, use multi_az = true and creatte subnets accordingly 
-  # only one subnet is not recomented for business applications
-  multi_az                  = false
-  engine                    = "mysql"
-  engine_version            = "5.7"
-  instance_class            = "db.t2.micro"
-  db_name                      = "worker_db"
-  username                  = "worker"
-  password                  = "worker123"
-  port                      = "3306"
-  db_subnet_group_name      = aws_db_subnet_group.db_subnet_group.id
-  vpc_security_group_ids    = [aws_security_group.rds_sg.id, aws_security_group.ecs_sg.id]
-  skip_final_snapshot       = true
-  final_snapshot_identifier = "worker-final"
-  publicly_accessible       = true
+
+resource "aws_db_instance" "em_thesis_lambda_db" {
+  allocated_storage    = 5
+  engine               = "postgres"
+  engine_version       = "15.3"
+  instance_class       = "db.t3.micro"
+  db_name              = var.DB_NAME
+  username             = var.DB_USERNAME
+  password             = var.DB_PASSWORD
+  parameter_group_name = "default.postgres15"
+  skip_final_snapshot  = true
+  db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
+
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  #publicly_accessible = true
+  tags = {
+    "thesis-cost-general" = "lambda"
+    "thesis-cost-db"      = "lambda"
+  }
 }
 
 
 #############################  ECS cluster ######################
 
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "my-cluster"
+  name = "my-ecs-cluster"
 }
 
 ################### ecs capacity provider ######################
 resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
- name = "test1"
+  name = "test1"
 
- auto_scaling_group_provider {
-   auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
+  auto_scaling_group_provider {
+    auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
 
-   managed_scaling {
-     maximum_scaling_step_size = 1000
-     minimum_scaling_step_size = 1
-     status                    = "ENABLED"
-     target_capacity           = 3
-   }
- }
+    managed_scaling {
+      maximum_scaling_step_size = 1000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 3
+    }
+  }
 }
 
 resource "aws_ecs_cluster_capacity_providers" "example" {
- cluster_name = aws_ecs_cluster.ecs_cluster.name
+  cluster_name = aws_ecs_cluster.ecs_cluster.name
 
- capacity_providers = [aws_ecs_capacity_provider.ecs_capacity_provider.name]
+  capacity_providers = [aws_ecs_capacity_provider.ecs_capacity_provider.name]
 
- default_capacity_provider_strategy {
-   base              = 1
-   weight            = 100
-   capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
- }
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
+  }
 }
 
 
@@ -345,7 +336,7 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
 
 
 resource "aws_ecs_task_definition" "task_definition_camelCaseConverer" {
-  family                = "ecsCamelCaseConverer"
+  family             = "ecsCamelCaseConverer"
   network_mode       = "awsvpc"
   execution_role_arn = aws_iam_role.ecs_agent.arn
   cpu                = 256
@@ -355,25 +346,33 @@ resource "aws_ecs_task_definition" "task_definition_camelCaseConverer" {
   }
   container_definitions = jsonencode([
     {
-      "name": "ecsCamelCaseConverer",
-      "image": "${var.ECR_REPO_URI}:latest",
-      "essential": true,
-      "portMappings": [
+      "name" : "ecsCamelCaseConverer",
+      "image" : "${var.ECR_REPO_URI}:latest",
+      "essential" : true,
+      "portMappings" : [
         {
-          "containerPort": 8080,
-          "hostPort": 8080,
-          "protocol": "tcp"
+          "containerPort" : 8080,
+          "hostPort" : 8080,
+          "protocol" : "tcp"
         }
       ],
-      "memory": 512,
-      "cpu": 256
+      "memory" : 512,
+      "cpu" : 256,
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "ecs-primeNumbersChecker-logs",
+          "awslogs-region" : var.AWS_DEFAULT_REGION,
+          "awslogs-stream-prefix" : "camelCase"
+        }
+      }
     }
   ])
 }
 
 
-resource "aws_ecs_task_definition" "task_definition_dockerHelloWorldTest" {
-  family             = "dockerTest"
+resource "aws_ecs_task_definition" "prime_numbers_checker_task_def" {
+  family             = "primeNumbersChecker"
   network_mode       = "awsvpc"
   execution_role_arn = aws_iam_role.ecs_agent.arn
   cpu                = 256
@@ -383,22 +382,50 @@ resource "aws_ecs_task_definition" "task_definition_dockerHelloWorldTest" {
   }
   container_definitions = jsonencode([
     {
-      name      = "dockerTest"
-      image     = "docker/getting-started:latest"
+      name      = "primeNumbersChecker"
+      image     = "emanuelmak/prime-numbers-checker-springboot-app:latest"
       cpu       = 256
       memory    = 512
       essential = true
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 8080
+          hostPort      = 8080
           protocol      = "tcp"
         }
-      ]
+      ],
+      environment = [
+        {
+          name  = "DB_HOST"
+          value = aws_db_instance.my_db.address
+        },
+        {
+          name  = "DB_USERNAME"
+          value = var.DB_USERNAME
+        },
+        {
+          name  = "DB_PASSWORD"
+          value = var.DB_PASSWORD
+        },
+        {
+          name  = "DB_NAME"
+          value = var.DB_NAME
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "ecs-primeNumbersChecker-logs"
+          "awslogs-region"        = var.AWS_DEFAULT_REGION
+          "awslogs-stream-prefix" = "checkPrime"
+        }
+      }
     }
   ])
 }
-
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name = "ecs-primeNumbersChecker-logs"
+}
 resource "aws_ecs_service" "ecsCamelCaseConverer" {
   name            = "ecsCamelCaseConverer"
   cluster         = aws_ecs_cluster.ecs_cluster.id
@@ -406,36 +433,36 @@ resource "aws_ecs_service" "ecsCamelCaseConverer" {
   desired_count   = 2
 
   network_configuration {
-   subnets         = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
-   security_groups = [aws_security_group.ecs_sg.id]
- }
+    subnets         = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
+    security_groups = [aws_security_group.ecs_sg.id]
+  }
 
- force_new_deployment = true
- placement_constraints {
-   type = "distinctInstance"
- }
+  force_new_deployment = true
+  placement_constraints {
+    type = "distinctInstance"
+  }
 
- triggers = {
-   redeployment = timestamp()
- }
+  triggers = {
+    redeployment = timestamp()
+  }
 
- capacity_provider_strategy {
-   capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-   weight            = 100
- }
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
+    weight            = 100
+  }
 
- load_balancer {
-   target_group_arn = aws_lb_target_group.ecs_tg_springboot.arn
-   container_name   = "ecsCamelCaseConverer"
-   container_port   = 8080
- }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ecs_tg_camelcase.arn
+    container_name   = "ecsCamelCaseConverer"
+    container_port   = 8080
+  }
 
- depends_on = [aws_autoscaling_group.ecs_asg]
+  depends_on = [aws_autoscaling_group.ecs_asg]
 }
-resource "aws_ecs_service" "dockerTest" {
-  name            = "dockerTest"
+resource "aws_ecs_service" "primeNumbersChecker" {
+  name            = "primeNumbersChecker"
   cluster         = aws_ecs_cluster.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.task_definition_dockerHelloWorldTest.arn
+  task_definition = aws_ecs_task_definition.prime_numbers_checker_task_def.arn
   desired_count   = 1
 
   network_configuration {
@@ -443,30 +470,33 @@ resource "aws_ecs_service" "dockerTest" {
     security_groups = [aws_security_group.ecs_sg.id]
   }
 
- force_new_deployment = true
- placement_constraints {
-   type = "distinctInstance"
- }
+  force_new_deployment = true
+  placement_constraints {
+    type = "distinctInstance"
+  }
 
- triggers = {
-   redeployment = timestamp()
- }
+  triggers = {
+    redeployment = timestamp()
+  }
 
- capacity_provider_strategy {
-   capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
-   weight            = 100
- }
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.ecs_capacity_provider.name
+    weight            = 100
+  }
 
- load_balancer {
-   target_group_arn = aws_lb_target_group.ecs_tg_docker.arn
-   container_name   = "dockerTest"
-   container_port   = 80
- }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.prime_numbers_checker_tg.arn
+    container_name   = "primeNumbersChecker"
+    container_port   = 8080
+  }
 
- depends_on = [aws_autoscaling_group.ecs_asg]
-  
+  depends_on = [aws_autoscaling_group.ecs_asg]
+
 }
 
-output "mysql_endpoint" {
-  value = aws_db_instance.mysql.endpoint
+output "my_db_endpoint" {
+  value = aws_db_instance.em_thesis_lambda_db.endpoint
+}
+output "load_balancer_dns_name" {
+  value = aws_lb.ecs_alb.dns_name
 }

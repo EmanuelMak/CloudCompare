@@ -1,0 +1,6 @@
+Method,Name,Error,Occurrences
+GET,/checkprime/checkIsPrimeNumber?number=76137819523599602,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=76137819523599602'),1
+GET,/checkprime/checkIsPrimeNumber?number=16856639305033482,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=16856639305033482'),1
+GET,/checkprime/checkIsPrimeNumber?number=61906931228607356,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=61906931228607356'),1
+GET,/checkprime/checkIsPrimeNumber?number=38704482291129850,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=38704482291129850'),1
+GET,/checkprime/checkIsPrimeNumber?number=56738320502727795,HTTPError('502 Server Error: Bad Gateway for url: /checkprime/checkIsPrimeNumber?number=56738320502727795'),1

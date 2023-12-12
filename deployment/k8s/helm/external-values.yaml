@@ -1,6 +1,11 @@
 checkPrime:
   db:
-    host: terraform-20231122180535019600000011.ck6hg31m9wia.eu-central-1.rds.amazonaws.com
+    host: terraform-2023121011232657480000000b.ccjvwtmj17ux.eu-central-1.rds.amazonaws.com
     name: mydb
     username: dbuser
     password: init1000
+nginx-ingress:
+  enabled: false
+ingress-nginx:
+  enabled: false
+ignoreIngress: true

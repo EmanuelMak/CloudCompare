@@ -70,7 +70,7 @@ class TestUser(HttpUser):
         if TEST_APPLICATION == "camelcase":
             return f"?text={random.choice(self.sentences)}"
         else:
-            return f"?number={random.randint(99999, 999999)}"
+            return f"?number={random.randint(9999999999999999, 99999999999999999)}"
 
     @task
     def perform_task(self):

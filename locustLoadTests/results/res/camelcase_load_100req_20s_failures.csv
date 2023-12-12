@@ -1,2 +1,0 @@
-Method,Name,Error,Occurrences
-GET,/prod/camelcase?text=I%20used%20to%20play%20triangle%20in%20a%20reggae%20band%20but%20left%20because%20it%20was%20just%20one%20ting%20after%20another.,HTTPError('500 Server Error: Internal Server Error for url: /prod/camelcase?text=I%20used%20to%20play%20triangle%20in%20a%20reggae%20band%20but%20left%20because%20it%20was%20just%20one%20ting%20after%20another.'),1

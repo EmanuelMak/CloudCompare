@@ -1,1 +1,1 @@
-{"statusCode":500,"body":"{\"message\":\"Failed to create table\"}"}
+{"statusCode":200,"body":"{\"message\":\"Table created and data inserted successfully\",\"data\":[{\"number\":\"2\",\"is_prime\":true},{\"number\":\"3\",\"is_prime\":true},{\"number\":\"5\",\"is_prime\":true},{\"number\":\"7\",\"is_prime\":true},{\"number\":\"11\",\"is_prime\":true},{\"number\":\"13\",\"is_prime\":true},{\"number\":\"17\",\"is_prime\":true},{\"number\":\"19\",\"is_prime\":true},{\"number\":\"23\",\"is_prime\":true},{\"number\":\"29\",\"is_prime\":true}]}"}

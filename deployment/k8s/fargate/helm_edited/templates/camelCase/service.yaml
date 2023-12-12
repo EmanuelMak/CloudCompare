@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: camelcase-service  # A descriptive name for the service
+spec:
+  type: ClusterIP  # Since Ingress will be used, ClusterIP is a common choice
+  selector:
+    app: camelCase  # This should match the labels of the pods created by the deployment
+  ports:
+    - protocol: TCP
+      port: {{ .Values.camelCase.service.externalPort }}  # The port the service exposes
+      targetPort: {{ .Values.camelCase.service.internalPort }}  # The port the container is listening on
