@@ -1,6 +1,5 @@
 # General
 
-secrets
 node_modules/
 *.log
 
